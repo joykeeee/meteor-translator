@@ -75,33 +75,25 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
     );
   }, [subtitles, searchQuery]);
 
-  // Count characters and unique terms
-  const totalCharacters = useMemo(() => {
-    return subtitles.reduce((acc, line) => acc + line.characters.filter((c) => !c.isPunctuation).length, 0);
-  }, [subtitles]);
-
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+    <div className="flex flex-col h-full">
       {/* Script Header Bar */}
-      <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+      <div className="pb-4 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
-            <h2 className="font-bold text-base text-slate-900 dark:text-white">
+            <h2 className="font-bold text-base text-gray-900 dark:text-white">
               Episode Subtitle Script
             </h2>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
-              {subtitles.length} lines • {totalCharacters} chars
-            </span>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setAutoScroll(!autoScroll)}
-              className={`flex items-center gap-1 px-2 py-1 text-xs rounded-lg transition border ${
+              className={`flex items-center gap-1 px-2 py-1 text-xs rounded-lg transition border whitespace-nowrap shrink-0 ${
                 autoScroll
                   ? 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-900 font-semibold'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500 border-gray-200 dark:border-gray-700'
               }`}
               title="Automatically scroll the script to the currently spoken line"
             >
@@ -112,7 +104,7 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
             {onOpenOcrScanner && (
               <button
                 onClick={onOpenOcrScanner}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 transition whitespace-nowrap shrink-0"
                 title="Optical Character Recognition: extract burned-in subtitles from video frames"
               >
                 <Scan className="w-3.5 h-3.5 text-cyan-500" />
@@ -124,7 +116,7 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
               <button
                 onClick={() => setIsExportMenuOpen((v) => !v)}
                 disabled={subtitles.length === 0}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shrink-0"
                 title="Save the script (OCR results and translations) to a file"
               >
                 <Download className="w-3.5 h-3.5 text-cyan-500" />
@@ -132,26 +124,26 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
               </button>
 
               {isExportMenuOpen && (
-                <div className="absolute right-0 mt-1 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-30 overflow-hidden animate-in fade-in">
+                <div className="absolute right-0 mt-1 w-56 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-30 overflow-hidden animate-in fade-in">
                   <button
                     onClick={() => {
                       exportSubtitlesAsSrt(subtitles, episodeTitle);
                       setIsExportMenuOpen(false);
                     }}
-                    className="w-full text-left px-3 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                    className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                   >
                     <span className="font-semibold block">Export as .srt</span>
-                    <span className="text-slate-500 dark:text-slate-400">Mandarin + pinyin + English, playable in any subtitle app</span>
+                    <span className="text-gray-500 dark:text-gray-400">Mandarin + pinyin + English, playable in any subtitle app</span>
                   </button>
                   <button
                     onClick={() => {
                       exportSubtitlesAsJson(subtitles, episodeTitle);
                       setIsExportMenuOpen(false);
                     }}
-                    className="w-full text-left px-3 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border-t border-slate-100 dark:border-slate-800 transition"
+                    className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 border-t border-gray-100 dark:border-gray-800 transition"
                   >
                     <span className="font-semibold block">Export as .json</span>
-                    <span className="text-slate-500 dark:text-slate-400">Full data: every character's pinyin/tone and Taiwanese notes</span>
+                    <span className="text-gray-500 dark:text-gray-400">Full data: every character's pinyin/tone and Taiwanese notes</span>
                   </button>
                 </div>
               )}
@@ -161,13 +153,13 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
 
         {/* Search bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search characters, Pinyin (e.g. 'nǐ'), or English..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/40 text-slate-900 dark:text-white placeholder-slate-400"
+            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/40 text-gray-900 dark:text-white placeholder-gray-400"
           />
         </div>
       </div>
@@ -180,10 +172,10 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
               <Scan className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-200">
+              <h3 className="font-bold text-sm sm:text-base text-gray-800 dark:text-gray-200">
                 No Subtitle Track File? No Problem!
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto mt-1">
                 Your video doesn't need external subtitle files. Use our Optical Character Recognition (OCR) scanner to read the burned-in Chinese dialogue directly off the bottom of the video frame.
               </p>
             </div>
@@ -198,7 +190,7 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
             )}
           </div>
         ) : filteredSubtitles.length === 0 ? (
-          <div className="text-center py-12 text-slate-400 dark:text-slate-500">
+          <div className="text-center py-12 text-gray-400 dark:text-gray-500">
             <p className="text-sm">No subtitles match your search.</p>
           </div>
         ) : (

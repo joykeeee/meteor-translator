@@ -30,4 +30,21 @@
   --color-yellow-800: #97520c;
   --color-yellow-900: #773d0d;
   --color-yellow-950: #43210a;
+
+  /* Background/neutral scale — same hue as the brand blue (~193°), but
+     desaturated and darkened, replacing Tailwind's built-in slate for
+     page/card backgrounds, borders, and body text. The tone-coding
+     "neutral tone" swatch is the one deliberate exception — it stays on
+     real slate so all 5 tone colors (including neutral) stay untouched. */
+  --color-gray-50: #f1f3f4;
+  --color-gray-100: #e8eced;
+  --color-gray-200: #d6dee0;
+  --color-gray-300: #bcc9cd;
+  --color-gray-400: #839ea5;
+  --color-gray-500: #597178;
+  --color-gray-600: #425357;
+  --color-gray-700: #333f42;
+  --color-gray-800: #1f2628;
+  --color-gray-900: #141819;
+  --color-gray-950: #090b0b;
 }

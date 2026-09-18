@@ -333,10 +333,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col font-sans transition-colors">
       {/* Header */}
       <Header
-        currentEpisode={currentEpisode}
         onOpenVideoModal={() => setIsVideoModalOpen(true)}
         onToggleChat={() => setIsChatOpen(!isChatOpen)}
         isChatOpen={isChatOpen}
@@ -386,14 +385,14 @@ export default function App() {
               onVideoRefReady={setVideoElement}
             />
 
-            {/* Episode Context Card */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs">
+            {/* Episode Context */}
+            <div>
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div>
                   <span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400">
                     {currentEpisode.showName} • {currentEpisode.genre}
                   </span>
-                  <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
                     {currentEpisode.title}
                   </h2>
                 </div>
@@ -401,7 +400,7 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setIsOcrModalOpen(true)}
-                    className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 border border-cyan-200 dark:border-cyan-900 transition flex items-center gap-1.5"
+                    className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 border border-cyan-200 dark:border-cyan-900 transition flex items-center gap-1.5 whitespace-nowrap shrink-0"
                   >
                     <Scan className="w-3.5 h-3.5" />
                     OCR Subtitle Scanner
@@ -409,36 +408,38 @@ export default function App() {
 
                   <button
                     onClick={() => setIsVideoModalOpen(true)}
-                    className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition"
+                    className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition whitespace-nowrap shrink-0"
                   >
                     Switch Episode
                   </button>
                 </div>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 {currentEpisode.description}
               </p>
 
               {/* Tone Legend */}
-              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-3 text-xs">
-                <span className="font-semibold text-slate-500">Pinyin Tones:</span>
-                <span className="inline-flex items-center gap-1 font-medium text-rose-600 dark:text-rose-400">
-                  <span className="w-2 h-2 rounded-full bg-rose-500" /> 1st Tone (mā)
-                </span>
-                <span className="inline-flex items-center gap-1 font-medium text-amber-600 dark:text-amber-400">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" /> 2nd Tone (má)
-                </span>
-                <span className="inline-flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" /> 3rd Tone (mǎ)
-                </span>
-                <span className="inline-flex items-center gap-1 font-medium text-blue-600 dark:text-blue-400">
-                  <span className="w-2 h-2 rounded-full bg-blue-500" /> 4th Tone (mà)
-                </span>
-                <span className="inline-flex items-center gap-1 font-medium text-slate-500">
-                  <span className="w-2 h-2 rounded-full bg-slate-400" /> Neutral (ma)
-                </span>
-              </div>
+              {colorCodedTones && (
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center gap-3 text-xs">
+                  <span className="font-semibold text-gray-500">Pinyin Tones:</span>
+                  <span className="inline-flex items-center gap-1 font-medium text-rose-600 dark:text-rose-400">
+                    <span className="w-2 h-2 rounded-full bg-rose-500" /> 1st Tone (mā)
+                  </span>
+                  <span className="inline-flex items-center gap-1 font-medium text-amber-600 dark:text-amber-400">
+                    <span className="w-2 h-2 rounded-full bg-amber-500" /> 2nd Tone (má)
+                  </span>
+                  <span className="inline-flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" /> 3rd Tone (mǎ)
+                  </span>
+                  <span className="inline-flex items-center gap-1 font-medium text-blue-600 dark:text-blue-400">
+                    <span className="w-2 h-2 rounded-full bg-blue-500" /> 4th Tone (mà)
+                  </span>
+                  <span className="inline-flex items-center gap-1 font-medium text-slate-500">
+                    <span className="w-2 h-2 rounded-full bg-slate-400" /> Neutral (ma)
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -494,10 +495,6 @@ export default function App() {
       <VideoInputModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}
-        onSelectSample={(ep) => {
-          setCurrentEpisode(ep);
-          setCurrentTime(0);
-        }}
         onCustomVideo={handleCustomVideo}
       />
 

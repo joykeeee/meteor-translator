@@ -125,10 +125,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative bg-black rounded-2xl overflow-hidden shadow-lg border border-slate-800 flex flex-col group/player"
+      className="relative bg-black rounded-2xl overflow-hidden shadow-lg border border-gray-800 flex flex-col group/player"
     >
       {/* Video Element */}
-      <div className="relative aspect-video w-full bg-slate-950 flex items-center justify-center">
+      <div className="relative aspect-video w-full bg-gray-950 flex items-center justify-center">
         <video
           ref={videoRef}
           src={videoUrl}
@@ -173,7 +173,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         {/* Video Subtitle Overlay (Exact Pinyin-Above, English-Below layout) */}
         {showOverlaySubtitle && activeLine && (
           <div className="absolute bottom-2 left-2 right-2 max-h-[25%] pointer-events-auto flex justify-center items-end">
-            <div className="max-w-md w-full max-h-full overflow-hidden bg-slate-950/85 backdrop-blur-md rounded-lg p-1.5 border border-white/20 shadow-2xl">
+            <div className="max-w-md w-full max-h-full overflow-hidden bg-gray-950/85 backdrop-blur-md rounded-lg p-1.5 border border-white/20 shadow-2xl">
               <SubtitleRubyLine
                 line={activeLine}
                 colorCodedTones={colorCodedTones}
@@ -188,7 +188,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       </div>
 
       {/* Control Bar */}
-      <div className="bg-slate-900 px-4 py-3 border-t border-slate-800 flex flex-col gap-2 select-none">
+      <div className="bg-gray-900 px-4 py-3 border-t border-gray-800 flex flex-col gap-2 select-none">
         {/* Scrub Bar with Subtitle Cue Markers */}
         <div className="relative w-full flex items-center group/scrub">
           <input
@@ -198,7 +198,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             step="0.1"
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-500 hover:h-2 transition-all"
+            className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500 hover:h-2 transition-all"
           />
 
           {/* Markers for subtitles */}
@@ -217,12 +217,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         </div>
 
         {/* Controls Row */}
-        <div className="flex items-center justify-between gap-4 text-xs text-slate-300">
+        <div className="flex items-center justify-between gap-4 text-xs text-gray-300">
           {/* Left: Play/Pause, Rewind, Time, Loop */}
           <div className="flex items-center gap-3">
             <button
               onClick={togglePlay}
-              className="p-1.5 hover:bg-slate-800 text-white rounded transition"
+              className="p-1.5 hover:bg-gray-800 text-white rounded transition"
               title={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current" />}
@@ -234,14 +234,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 5);
                 }
               }}
-              className="p-1.5 hover:bg-slate-800 rounded transition text-slate-400 hover:text-white"
+              className="p-1.5 hover:bg-gray-800 rounded transition text-gray-400 hover:text-white"
               title="Jump 5s back"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
 
             {/* Time readout */}
-            <span className="font-mono text-slate-400">
+            <span className="font-mono text-gray-400">
               {Math.floor(currentTime / 60)}:{(currentTime % 60).toFixed(0).padStart(2, '0')} /{' '}
               {Math.floor(duration / 60)}:{(duration % 60).toFixed(0).padStart(2, '0')}
             </span>
@@ -262,7 +262,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               className={`flex items-center gap-1 px-2.5 py-1 rounded transition text-xs font-semibold ${
                 loopingLine
                   ? 'bg-cyan-600 text-white ring-2 ring-cyan-400/40 shadow-xs'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
               }`}
               title={
                 loopingLine
@@ -279,7 +279,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               <button
                 onClick={onQuickOcrCurrentFrame}
                 disabled={isOcrScanning}
-                className="flex items-center gap-1 px-2.5 py-1 rounded transition text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-yellow-300 border border-yellow-500/30 hover:border-yellow-400/60 shadow-xs disabled:opacity-50"
+                className="flex items-center gap-1 px-2.5 py-1 rounded transition text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-yellow-300 border border-yellow-500/30 hover:border-yellow-400/60 shadow-xs disabled:opacity-50"
                 title="Use Optical Character Recognition to read burned-in Chinese subtitles from this exact frame"
               >
                 <Camera className={`w-3.5 h-3.5 ${isOcrScanning ? 'animate-spin text-yellow-400' : ''}`} />
@@ -295,8 +295,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onClick={onToggleOverlaySubtitle}
               className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition ${
                 showOverlaySubtitle
-                  ? 'bg-slate-700 text-cyan-300 font-semibold'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-gray-700 text-cyan-300 font-semibold'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
               }`}
               title="Toggle Pinyin & Subtitle overlay on video screen"
             >
@@ -305,13 +305,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </button>
 
             {/* Playback speed selector */}
-            <div className="flex items-center bg-slate-800 rounded p-0.5 font-mono text-[11px]">
+            <div className="flex items-center bg-gray-800 rounded p-0.5 font-mono text-[11px]">
               {[0.75, 1, 1.25].map((rate) => (
                 <button
                   key={rate}
                   onClick={() => changePlaybackRate(rate)}
                   className={`px-1.5 py-0.5 rounded transition ${
-                    playbackRate === rate ? 'bg-cyan-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                    playbackRate === rate ? 'bg-cyan-600 text-white font-bold' : 'text-gray-400 hover:text-white'
                   }`}
                   title={`${rate}x speed (slower speed is great for learning pronunciation)`}
                 >
@@ -323,7 +323,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             {/* Volume toggle */}
             <button
               onClick={toggleMute}
-              className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded transition"
+              className="p-1.5 hover:bg-gray-800 text-gray-400 hover:text-white rounded transition"
             >
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             </button>
@@ -331,7 +331,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             {/* Fullscreen */}
             <button
               onClick={toggleFullscreen}
-              className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded transition"
+              className="p-1.5 hover:bg-gray-800 text-gray-400 hover:text-white rounded transition"
             >
               <Maximize className="w-3.5 h-3.5" />
             </button>

@@ -52,7 +52,7 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
       className={`group relative rounded-xl transition-all duration-200 border ${isCompact ? 'p-2' : 'p-4'} ${
         isActive
           ? 'bg-cyan-50/70 dark:bg-cyan-950/30 border-cyan-300 dark:border-cyan-700 shadow-sm ring-1 ring-cyan-300/60 dark:ring-cyan-700/60'
-          : 'bg-white dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50/50 dark:hover:bg-slate-800'
+          : 'bg-white dark:bg-gray-800/80 border-gray-200/80 dark:border-gray-700/80 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50/50 dark:hover:bg-gray-800'
       }`}
     >
       {/* Top bar with Speaker, Timestamp & Interactive actions */}
@@ -66,7 +66,7 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
           {onJumpToTime && (
             <button
               onClick={() => onJumpToTime(line.startTime)}
-              className="text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 font-mono flex items-center gap-1 transition"
+              className="text-gray-500 hover:text-cyan-600 dark:text-gray-400 dark:hover:text-cyan-400 font-mono flex items-center gap-1 transition"
               title="Click to jump to this moment in video"
             >
               <span>▶</span>
@@ -83,7 +83,7 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
                 e.stopPropagation();
                 onLoopLine(line);
               }}
-              className={`text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition ${isCompact ? 'p-1' : 'p-1.5'}`}
+              className={`text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition ${isCompact ? 'p-1' : 'p-1.5'}`}
               title="Replay this line"
             >
               <RotateCcw className={isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
@@ -91,7 +91,7 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
           )}
           <button
             onClick={handlePlayAudio}
-            className={`text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-900/40 rounded transition ${isCompact ? 'p-1' : 'p-1.5'}`}
+            className={`text-gray-500 hover:text-cyan-600 dark:text-gray-400 dark:hover:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-900/40 rounded transition ${isCompact ? 'p-1' : 'p-1.5'}`}
             title="Listen to Taiwanese Mandarin pronunciation"
           >
             <Volume2 className={isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
@@ -117,7 +117,7 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
                   onDeleteLine(line);
                 }
               }}
-              className={`text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded transition ${isCompact ? 'p-1' : 'p-1.5'}`}
+              className={`text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded transition ${isCompact ? 'p-1' : 'p-1.5'}`}
               title="Delete this line from the script"
             >
               <Trash2 className={isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
@@ -133,7 +133,7 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
             return (
               <span
                 key={index}
-                className={`self-end font-sans text-slate-400 dark:text-slate-500 px-0.5 ${
+                className={`self-end font-sans text-gray-400 dark:text-gray-500 px-0.5 ${
                   isCompact ? 'text-sm sm:text-base' : isLarge ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl'
                 }`}
               >
@@ -142,13 +142,13 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
             );
           }
 
-          const toneInfo = colorCodedTones ? getToneColor(token.tone) : { text: 'text-slate-600 dark:text-slate-300' };
+          const toneInfo = colorCodedTones ? getToneColor(token.tone) : { text: 'text-gray-600 dark:text-gray-300' };
 
           return (
             <button
               key={index}
               onClick={(e) => handleCharacterClick(e, token)}
-              className={`group/char inline-flex flex-col items-center justify-end rounded-lg transition cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 focus:outline-none focus:ring-1 focus:ring-cyan-400 ${
+              className={`group/char inline-flex flex-col items-center justify-end rounded-lg transition cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/70 focus:outline-none focus:ring-1 focus:ring-cyan-400 ${
                 isCompact ? 'p-0.5 min-w-[16px]' : 'p-1'
               } ${isLarge ? 'min-w-[32px]' : !isCompact ? 'min-w-[26px]' : ''}`}
               title={`Click to inspect '${token.char}' (${token.pinyin}, Tone ${token.tone})`}
@@ -164,14 +164,14 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
 
               {/* Optional Zhuyin (Bopomofo) */}
               {showZhuyin && token.zhuyin && (
-                <span className="text-[9px] text-slate-400 dark:text-slate-500 font-mono -mt-0.5 mb-0.5">
+                <span className="text-[9px] text-gray-400 dark:text-gray-500 font-mono -mt-0.5 mb-0.5">
                   {token.zhuyin}
                 </span>
               )}
 
               {/* Mandarin Character */}
               <span
-                className={`font-serif tracking-normal text-slate-900 dark:text-slate-100 group-hover/char:text-cyan-600 dark:group-hover/char:text-cyan-400 transition-colors ${
+                className={`font-serif tracking-normal text-gray-900 dark:text-gray-100 group-hover/char:text-cyan-600 dark:group-hover/char:text-cyan-400 transition-colors ${
                   isCompact ? 'text-sm sm:text-base' : isLarge ? 'text-2xl sm:text-3xl font-medium' : 'text-xl sm:text-2xl'
                 }`}
               >
@@ -183,8 +183,8 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
       </div>
 
       {/* English Translation (Below Mandarin characters) */}
-      <div className={`border-t border-slate-100 dark:border-slate-700/60 ${isCompact ? 'mt-1 pt-1' : 'mt-3 pt-2.5'}`}>
-        <p className={`text-slate-700 dark:text-slate-300 font-normal ${isCompact ? 'text-xs leading-snug' : 'text-sm sm:text-base leading-relaxed'}`}>
+      <div className={`border-t border-gray-100 dark:border-gray-700/60 ${isCompact ? 'mt-1 pt-1' : 'mt-3 pt-2.5'}`}>
+        <p className={`text-gray-700 dark:text-gray-300 font-normal ${isCompact ? 'text-xs leading-snug' : 'text-sm sm:text-base leading-relaxed'}`}>
           {line.english}
         </p>
       </div>

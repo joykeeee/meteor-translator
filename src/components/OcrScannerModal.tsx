@@ -272,38 +272,38 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="bg-white dark:bg-gray-900 w-full max-w-3xl rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
               <Scan className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white flex items-center gap-2">
+              <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white flex items-center gap-2">
                 Optical Character Recognition (OCR) Subtitle Parser
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Extract burned-in dialogue subtitles directly from video frames without subtitle files
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Extract subtitles directly from frames
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg"
+            className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800 px-5 pt-3 gap-4 text-xs sm:text-sm font-medium">
+        <div className="flex border-b border-gray-200 dark:border-gray-800 px-5 pt-3 gap-4 text-xs sm:text-sm font-medium">
           <button
             onClick={() => setMode('single')}
             className={`pb-2.5 transition border-b-2 flex items-center gap-1.5 ${
               mode === 'single'
                 ? 'border-cyan-600 text-cyan-600 dark:text-cyan-400 font-semibold'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                : 'border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             <Camera className="w-4 h-4" />
@@ -315,7 +315,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
             className={`pb-2.5 transition border-b-2 flex items-center gap-1.5 ${
               mode === 'batch'
                 ? 'border-cyan-600 text-cyan-600 dark:text-cyan-400 font-semibold'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                : 'border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             <Sparkles className="w-4 h-4" />
@@ -327,7 +327,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
             className={`pb-2.5 transition border-b-2 flex items-center gap-1.5 ${
               mode === 'upload'
                 ? 'border-cyan-600 text-cyan-600 dark:text-cyan-400 font-semibold'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                : 'border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             <Upload className="w-4 h-4" />
@@ -338,13 +338,13 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
         {/* Modal Body */}
         <div className="p-5 overflow-y-auto space-y-5 flex-1">
           {/* Subtitle Zone Crop Region Adjuster */}
-          <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700/80">
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+          <div className="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-xl border border-gray-200 dark:border-gray-700/80">
+            <div className="flex items-center justify-between text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
               <span className="flex items-center gap-1.5">
                 <SlidersHorizontal className="w-3.5 h-3.5 text-cyan-500" />
                 Subtitle Detection Zone:
               </span>
-              <span className="font-mono text-[11px] text-slate-500">
+              <span className="font-mono text-[11px] text-gray-500">
                 Top {cropRegion.topPercent}% to {cropRegion.bottomPercent}% of frame
               </span>
             </div>
@@ -356,7 +356,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                 className={`py-1 px-2 rounded-lg text-xs font-medium border transition ${
                   cropRegion.topPercent === 70
                     ? 'bg-cyan-50 dark:bg-cyan-950/40 border-cyan-400 text-cyan-600 dark:text-cyan-400'
-                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'
                 }`}
               >
                 Standard Lower Bar (Bottom 30%)
@@ -367,7 +367,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                 className={`py-1 px-2 rounded-lg text-xs font-medium border transition ${
                   cropRegion.topPercent === 60
                     ? 'bg-cyan-50 dark:bg-cyan-950/40 border-cyan-400 text-cyan-600 dark:text-cyan-400'
-                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'
                 }`}
               >
                 Taller Subtitle Bar (Bottom 40%)
@@ -378,7 +378,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                 className={`py-1 px-2 rounded-lg text-xs font-medium border transition ${
                   cropRegion.topPercent === 10
                     ? 'bg-cyan-50 dark:bg-cyan-950/40 border-cyan-400 text-cyan-600 dark:text-cyan-400'
-                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'
                 }`}
               >
                 Full Screen Frame (All Text)
@@ -391,17 +391,17 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                     Scan Frame at Current Video Timestamp ({Math.floor(currentTime / 60)}:{(currentTime % 60).toFixed(0).padStart(2, '0')})
                   </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Snapshots the video frame subtitle bar and runs Gemini vision OCR to transcribe the dialogue.
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={handleCaptureCurrentFrame}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition flex items-center gap-1"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                     Refresh Frame
@@ -419,15 +419,15 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
 
               {/* Frame Capture Preview */}
               {capturedPreview && (
-                <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black flex flex-col items-center">
-                  <div className="w-full bg-slate-950 px-3 py-1 text-[11px] text-slate-400 flex items-center justify-between">
+                <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-black flex flex-col items-center">
+                  <div className="w-full bg-gray-950 px-3 py-1 text-[11px] text-gray-400 flex items-center justify-between">
                     <span>Cropped Subtitle Detection Area</span>
                     <span>Ready for OCR</span>
                   </div>
                   <img
                     src={capturedPreview}
                     alt="Captured video subtitle frame"
-                    className="max-h-48 w-full object-contain bg-slate-950"
+                    className="max-h-48 w-full object-contain bg-gray-950"
                   />
                 </div>
               )}
@@ -453,7 +453,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
 
                   {singleResult.hasSubtitle && singleResult.mandarin ? (
                     <div className="space-y-3">
-                      <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
+                      <div className="bg-white dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-800">
                         <SubtitleRubyLine
                           line={{
                             id: 'temp-preview',
@@ -471,7 +471,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="text-xs text-slate-500 dark:text-slate-400 py-2">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 py-2">
                       {singleResult.message || 'No dialogue subtitles were detected in this particular frame. Try pausing during a spoken dialogue moment and scan again.'}
                     </div>
                   )}
@@ -484,10 +484,10 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
           {mode === 'batch' && (
             <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                   Automated Video Timeline OCR Scanner
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Scans through the video at regular intervals, detects on-screen subtitle changes, merges continuous lines, and generates the interactive script automatically.
                 </p>
               </div>
@@ -495,7 +495,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
               {/* Scan Options */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Start Time (Seconds):
                   </label>
                   <input
@@ -504,12 +504,12 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                     max={videoDuration}
                     value={batchStartTime}
                     onChange={(e) => setBatchStartTime(parseFloat(e.target.value) || 0)}
-                    className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     End Time (Seconds):
                   </label>
                   <input
@@ -518,18 +518,18 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                     max={videoDuration}
                     value={batchEndTime}
                     onChange={(e) => setBatchEndTime(parseFloat(e.target.value) || 0)}
-                    className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Sampling Interval:
                   </label>
                   <select
                     value={scanInterval}
                     onChange={(e) => setScanInterval(parseFloat(e.target.value))}
-                    className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white"
                   >
                     <option value={1.5}>Every 1.5 seconds (High precision)</option>
                     <option value={2.5}>Every 2.5 seconds (Recommended)</option>
@@ -572,19 +572,19 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
 
               {/* Status & Progress */}
               {currentBatchStatus && (
-                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs space-y-2">
+                <div className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-xs space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="font-semibold text-gray-700 dark:text-gray-300">
                       {currentBatchStatus}
                     </span>
-                    <span className="font-mono text-slate-500">
+                    <span className="font-mono text-gray-500">
                       {Math.floor(batchProgressTime / 60)}:{(batchProgressTime % 60).toFixed(0).padStart(2, '0')} /{' '}
                       {Math.floor(batchEndTime / 60)}:{(batchEndTime % 60).toFixed(0).padStart(2, '0')}
                     </span>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
                     <div
                       className="bg-cyan-600 h-full transition-all duration-300"
                       style={{
@@ -604,25 +604,25 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
               {/* Live Preview of detected lines */}
               {detectedBatchLines.length > 0 && (
                 <div className="space-y-2">
-                  <h5 className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  <h5 className="text-xs font-bold text-gray-700 dark:text-gray-300">
                     Detected Lines ({detectedBatchLines.length}):
                   </h5>
                   <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
                     {detectedBatchLines.map((line, idx) => (
                       <div
                         key={line.id}
-                        className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-xs flex items-start justify-between gap-3"
+                        className="p-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-xs flex items-start justify-between gap-3"
                       >
                         <div>
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-mono text-[11px] text-cyan-600 dark:text-cyan-400 font-semibold">
                               {line.startTime}s - {line.endTime}s
                             </span>
-                            <span className="font-bold text-slate-900 dark:text-white">
+                            <span className="font-bold text-gray-900 dark:text-white">
                               {line.mandarin}
                             </span>
                           </div>
-                          <p className="text-slate-600 dark:text-slate-400 text-[11px]">
+                          <p className="text-gray-600 dark:text-gray-400 text-[11px]">
                             {line.english}
                           </p>
                         </div>
@@ -641,15 +641,15 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
           {mode === 'upload' && (
             <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                   Upload Video Screenshot / Frame Image
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Select or drag in a screenshot with Mandarin subtitles to transcribe it with character pinyin and translation.
                 </p>
               </div>
 
-              <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-6 text-center hover:border-cyan-400 transition cursor-pointer">
+              <div className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl p-6 text-center hover:border-cyan-400 transition cursor-pointer">
                 <input
                   type="file"
                   accept="image/*"
@@ -662,17 +662,17 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                   className="cursor-pointer flex flex-col items-center gap-2"
                 >
                   <Upload className="w-8 h-8 text-cyan-500" />
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                     Click to select frame image or screenshot
                   </span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-gray-400">
                     Supports JPG, PNG, WebP screenshots with burned-in subtitles
                   </span>
                 </label>
               </div>
 
               {capturedPreview && (
-                <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black flex flex-col items-center">
+                <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-black flex flex-col items-center">
                   <img
                     src={capturedPreview}
                     alt="Uploaded screenshot"
@@ -697,7 +697,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                     </button>
                   </div>
 
-                  <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
+                  <div className="bg-white dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-800">
                     <SubtitleRubyLine
                       line={{
                         id: 'screenshot-preview',

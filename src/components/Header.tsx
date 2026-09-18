@@ -1,9 +1,7 @@
 import React from 'react';
 import { Sparkles, Video, MessageSquare, Volume2, BookOpen, Settings } from 'lucide-react';
-import { DramaEpisode } from '../types';
 
 interface HeaderProps {
-  currentEpisode: DramaEpisode;
   onOpenVideoModal: () => void;
   onToggleChat: () => void;
   isChatOpen: boolean;
@@ -15,7 +13,6 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  currentEpisode,
   onOpenVideoModal,
   onToggleChat,
   isChatOpen,
@@ -25,7 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleColorTones,
 }) => {
   return (
-    <header className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <header className="sticky top-0 z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur border-b border-gray-200 dark:border-gray-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Logo & Current Episode */}
         <div className="flex items-center gap-3 min-w-0">
@@ -34,15 +31,12 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">
-                Taiwanese Drama Subtitle Tutor
+              <h1 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white truncate">
+                Meteor Translator
               </h1>
-              <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300">
-                Mandarin &amp; Pinyin
-              </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-              {currentEpisode.showName} • {currentEpisode.title}
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+              Taiwanese Mandarin Subtitle &amp; Pronunciation Tutor
             </p>
           </div>
         </div>
@@ -50,13 +44,13 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Action Controls */}
         <div className="flex items-center gap-2 shrink-0">
           {/* Tone & Zhuyin Toggles */}
-          <div className="hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700 text-xs">
+          <div className="hidden sm:flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 border border-gray-200 dark:border-gray-700 text-xs">
             <button
               onClick={onToggleColorTones}
               className={`px-2.5 py-1 rounded font-medium transition ${
                 colorCodedTones
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-xs'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
               }`}
               title="Color-code pinyin tones (1st red, 2nd amber, 3rd green, 4th blue)"
             >
@@ -66,8 +60,8 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onToggleZhuyin}
               className={`px-2.5 py-1 rounded font-medium transition ${
                 showZhuyin
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-xs'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
               }`}
               title="Toggle Taiwanese Zhuyin / Bopomofo (注音符號)"
             >
@@ -78,9 +72,9 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Upload / Link Video Button */}
           <button
             onClick={onOpenVideoModal}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300/80 dark:border-slate-700 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300/80 dark:border-gray-700 transition"
           >
-            <Video className="w-4 h-4 text-slate-500" />
+            <Video className="w-4 h-4 text-gray-500" />
             <span className="hidden sm:inline">Upload / Link Episode</span>
             <span className="sm:hidden">Video</span>
           </button>

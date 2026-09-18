@@ -46,32 +46,32 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white dark:bg-gray-900 w-full max-w-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-gray-900/50">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300">
               Character Inspector
             </span>
-            <span className="text-xs text-slate-500">Taiwanese Mandarin</span>
+            <span className="text-xs text-gray-500">Taiwanese Mandarin</span>
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg"
+            className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Character Card Hero */}
-        <div className="p-6 text-center border-b border-slate-100 dark:border-slate-800">
+        <div className="p-6 text-center border-b border-gray-100 dark:border-gray-800">
           {/* Pinyin with tone color */}
           <div className="flex items-center justify-center gap-3 mb-2">
             <span className={`font-mono text-2xl font-bold tracking-tight ${toneColor.text}`}>
               {token.pinyin || '—'}
             </span>
             {token.zhuyin && (
-              <span className="text-sm px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">
+              <span className="text-sm px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-mono">
                 注音: {token.zhuyin}
               </span>
             )}
@@ -79,7 +79,7 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
 
           {/* Big Character Display */}
           <div className="my-2">
-            <span className="font-serif text-7xl font-bold text-slate-900 dark:text-white select-all">
+            <span className="font-serif text-7xl font-bold text-gray-900 dark:text-white select-all">
               {token.char}
             </span>
           </div>
@@ -106,7 +106,7 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
         {/* In-Context Sentence Section */}
         <div className="p-5 space-y-3 text-xs sm:text-sm">
           <div>
-            <div className="flex items-center justify-between text-slate-500 mb-1 text-xs">
+            <div className="flex items-center justify-between text-gray-500 mb-1 text-xs">
               <span className="font-semibold">Context in this Subtitle Line:</span>
               <button
                 onClick={handleSpeakLine}
@@ -116,10 +116,10 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
                 <span>Hear Full Line</span>
               </button>
             </div>
-            <p className="font-serif text-base text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/60">
+            <p className="font-serif text-base text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800/60 p-2.5 rounded-xl border border-gray-200 dark:border-gray-700/60">
               {line.mandarin}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 italic">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">
               "{line.english}"
             </p>
           </div>
