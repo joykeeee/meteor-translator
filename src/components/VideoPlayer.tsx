@@ -175,13 +175,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         {/* Video Subtitle Overlay (Exact Pinyin-Above, English-Below layout) */}
         {showOverlaySubtitle && activeLine && (
           <div className="absolute bottom-4 left-4 right-4 pointer-events-auto flex justify-center">
-            <div className="max-w-2xl w-full bg-slate-950/85 backdrop-blur-md rounded-xl p-3 border border-white/20 shadow-2xl">
+            <div className="max-w-lg w-full bg-slate-950/85 backdrop-blur-md rounded-lg p-2 border border-white/20 shadow-2xl">
               <SubtitleRubyLine
                 line={activeLine}
                 colorCodedTones={colorCodedTones}
                 showZhuyin={showZhuyin}
                 onAskAiAboutLine={onAskAiAboutLine}
-                size="large"
+                size="normal"
+                hideTaiwanNotes
               />
             </div>
           </div>

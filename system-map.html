@@ -1,0 +1,333 @@
+<title>Meteor Translator Map</title>
+<meta name="description" content="How data moves between you, the React app, the Express server, and Gemini across Meteor Translator's five interaction flows.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #f5f5f3;
+    --surface: #ffffff;
+    --surface-2: #edece8;
+    --ink: #1d1c1a;
+    --ink-muted: #6b675f;
+    --line: #d9d6cf;
+    --net: #a8631f;
+    --net-soft: #f2e4d0;
+    --local: #276b5c;
+    --local-soft: #dcece7;
+    --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131311;
+      --surface: #1c1b18;
+      --surface-2: #242320;
+      --ink: #f1efe9;
+      --ink-muted: #a49f93;
+      --line: #38352e;
+      --net: #d99a4e;
+      --net-soft: #3a2c17;
+      --local: #6fc4ac;
+      --local-soft: #16302a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131311;
+    --surface: #1c1b18;
+    --surface-2: #242320;
+    --ink: #f1efe9;
+    --ink-muted: #a49f93;
+    --line: #38352e;
+    --net: #d99a4e;
+    --net-soft: #3a2c17;
+    --local: #6fc4ac;
+    --local-soft: #16302a;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    padding-inline: 20px;
+    padding-block: 28px;
+  }
+  .page { max-width: 940px; margin-inline: auto; display: flex; flex-direction: column; gap: 22px; }
+
+  h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    margin: 0 0 6px;
+  }
+  .intro { color: var(--ink-muted); font-size: 0.95rem; line-height: 1.6; max-width: 62ch; margin: 0; }
+
+  figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .diagram-scroll { overflow-x: auto; }
+  svg.map { display: block; min-width: 760px; width: 100%; height: auto; }
+  figcaption {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 16px 24px; font-size: 0.8rem; color: var(--ink-muted); }
+  .legend span.sw { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .sw.net { background: var(--net); }
+  .sw.local { background: var(--local); }
+  .sw.opt { border: 1.5px dashed var(--ink-muted); width: 9.5px; height: 9.5px; background: transparent; }
+
+  .flows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .flows li {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  }
+  .flows .n {
+    font-family: var(--font-mono); font-weight: 600; font-size: 0.85rem;
+    color: var(--ink-muted);
+  }
+  .flows h3 { margin: 0 0 3px; font-size: 0.9rem; font-weight: 600; }
+  .flows p { margin: 0; font-size: 0.83rem; color: var(--ink-muted); line-height: 1.5; }
+  .flows code { font-family: var(--font-mono); font-size: 0.78rem; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+  .flows li.local-row { border-color: var(--local); }
+  .flows li.local-row .n { color: var(--local); }
+
+  @media (max-width: 620px) {
+    .flows li { grid-template-columns: 22px 1fr; }
+  }
+
+  /* Diagram (SVG stays free of its own <style>; rules live here instead) */
+  .map text { font-family: var(--font-sans); fill: var(--ink); }
+  .map .mono { font-family: var(--font-mono); }
+  .map .muted { fill: var(--ink-muted); }
+  .map .hdr { font-weight: 700; font-size: 12.5px; letter-spacing: 0.06em; }
+  .map .sub { font-size: 9.5px; fill: var(--ink-muted); }
+  .map .rowTitle { font-weight: 600; font-size: 12.5px; }
+  .map .boxText { font-size: 11px; }
+  .map .gapText { font-size: 9px; fill: var(--ink-muted); }
+  .map .note { font-size: 9.5px; font-style: italic; fill: var(--ink-muted); }
+  .map .boxN { fill: var(--surface); stroke: var(--ink-muted); stroke-width: 1.4; }
+  .map .boxG { fill: var(--surface); stroke: var(--net); stroke-width: 1.4; }
+  .map .boxG.opt { stroke-dasharray: 4 3; }
+  .map .boxL { fill: var(--surface); stroke: var(--local); stroke-width: 1.6; }
+  .map .lineN { stroke: var(--ink-muted); stroke-width: 1.3; fill: none; }
+  .map .lineG { stroke: var(--net); stroke-width: 1.3; fill: none; }
+  .map .lineG.opt { stroke-dasharray: 4 3; }
+  .map .lineL { stroke: var(--local); stroke-width: 1.6; fill: none; }
+  .map .divider { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 4; }
+  .map .fillN { fill: var(--ink-muted); }
+  .map .fillG { fill: var(--net); }
+  .map .fillL { fill: var(--local); }
+</style>
+
+<div class="page">
+  <header>
+    <p class="eyebrow">Meteor Translator · system map</p>
+    <h1>Where each interaction actually goes</h1>
+    <p class="intro">
+      Five things you can do in the app, traced from your click to wherever the data actually travels.
+      Two of them never leave your browser; the rest make a round trip through the Express server to Gemini and back.
+    </p>
+  </header>
+
+  <figure>
+    <div class="diagram-scroll">
+      <svg class="map" viewBox="0 0 1000 550" role="img" aria-label="Diagram of five Meteor Translator interaction flows, showing which ones stay inside the browser and which ones cross the network to the Express server and Gemini API">
+        <defs>
+          <marker id="arrN" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+            <polygon points="0,0 8,4 0,8" class="fillN"></polygon>
+          </marker>
+          <marker id="arrG" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+            <polygon points="0,0 8,4 0,8" class="fillG"></polygon>
+          </marker>
+          <marker id="arrL" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+            <polygon points="0,0 8,4 0,8" class="fillL"></polygon>
+          </marker>
+        </defs>
+
+        <!-- Column headers -->
+        <text x="105" y="34" text-anchor="middle" class="hdr">YOU</text>
+        <text x="105" y="50" text-anchor="middle" class="sub">in the browser</text>
+        <text x="365" y="34" text-anchor="middle" class="hdr">REACT APP</text>
+        <text x="365" y="50" text-anchor="middle" class="sub mono">src/App.tsx state</text>
+        <text x="645" y="34" text-anchor="middle" class="hdr">EXPRESS SERVER</text>
+        <text x="645" y="50" text-anchor="middle" class="sub mono">server.ts</text>
+        <text x="895" y="34" text-anchor="middle" class="hdr">GEMINI API</text>
+        <text x="895" y="50" text-anchor="middle" class="sub mono">gemini-3.8-flash</text>
+
+        <!-- Boundary labels -->
+        <text x="515" y="64" text-anchor="middle" class="gapText mono">⇄ HTTP</text>
+        <text x="775" y="64" text-anchor="middle" class="gapText mono">⇄ Gemini API</text>
+
+        <!-- Column dividers -->
+        <line x1="220" y1="70" x2="220" y2="540" class="divider"></line>
+        <line x1="515" y1="70" x2="515" y2="540" class="divider"></line>
+        <line x1="775" y1="70" x2="775" y2="540" class="divider"></line>
+
+        <!-- Row A: Load or switch an episode (Yc=126) -->
+        <text x="20" y="90" class="rowTitle">1 · Load or switch an episode</text>
+        <rect x="20" y="98" width="170" height="56" rx="8" class="boxN"></rect>
+        <text x="105" y="130" text-anchor="middle" class="boxText">Pick / add an episode</text>
+        <rect x="250" y="98" width="230" height="56" rx="8" class="boxN"></rect>
+        <text x="365" y="130" text-anchor="middle" class="boxText">setCurrentEpisode()</text>
+        <rect x="550" y="98" width="190" height="56" rx="8" class="boxG opt"></rect>
+        <text x="645" y="130" text-anchor="middle" class="boxText mono">/api/analyze-subtitles</text>
+        <rect x="810" y="98" width="170" height="56" rx="8" class="boxG opt"></rect>
+        <text x="895" y="130" text-anchor="middle" class="boxText">parse + translate</text>
+
+        <line x1="190" y1="126" x2="250" y2="126" class="lineN" marker-end="url(#arrN)"></line>
+        <line x1="480" y1="117" x2="550" y2="117" class="lineG opt" marker-end="url(#arrG)"></line>
+        <text x="515" y="112" text-anchor="middle" class="gapText">subtitle text</text>
+        <line x1="550" y1="135" x2="480" y2="135" class="lineG opt" marker-end="url(#arrG)"></line>
+        <text x="515" y="150" text-anchor="middle" class="gapText">◀ lines[]</text>
+        <line x1="740" y1="117" x2="810" y2="117" class="lineG opt" marker-end="url(#arrG)"></line>
+        <text x="775" y="112" text-anchor="middle" class="gapText">prompt</text>
+        <line x1="810" y1="135" x2="740" y2="135" class="lineG opt" marker-end="url(#arrG)"></line>
+        <text x="775" y="150" text-anchor="middle" class="gapText">◀ pinyin+English</text>
+        <text x="765" y="168" text-anchor="middle" class="note">only if you paste subtitle text — otherwise a starter line is used</text>
+
+        <!-- Row B: OCR the video frame (Yc=220) -->
+        <text x="20" y="184" class="rowTitle">2 · Scan the video frame (OCR)</text>
+        <rect x="20" y="192" width="170" height="56" rx="8" class="boxN"></rect>
+        <text x="105" y="224" text-anchor="middle" class="boxText">OCR the video frame</text>
+        <rect x="250" y="192" width="230" height="56" rx="8" class="boxN"></rect>
+        <text x="365" y="224" text-anchor="middle" class="boxText">captureFrameFromVideo()</text>
+        <rect x="550" y="192" width="190" height="56" rx="8" class="boxG"></rect>
+        <text x="645" y="224" text-anchor="middle" class="boxText mono">/api/ocr-frame</text>
+        <rect x="810" y="192" width="170" height="56" rx="8" class="boxG"></rect>
+        <text x="895" y="224" text-anchor="middle" class="boxText">read burned-in text</text>
+
+        <line x1="190" y1="220" x2="250" y2="220" class="lineN" marker-end="url(#arrN)"></line>
+        <text x="220" y="210" text-anchor="middle" class="gapText">crop → canvas</text>
+        <line x1="480" y1="211" x2="550" y2="211" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="515" y="206" text-anchor="middle" class="gapText">image (base64)</text>
+        <line x1="550" y1="229" x2="480" y2="229" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="515" y="244" text-anchor="middle" class="gapText">◀ new line</text>
+        <line x1="740" y1="211" x2="810" y2="211" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="775" y="206" text-anchor="middle" class="gapText">read + translate</text>
+        <line x1="810" y1="229" x2="740" y2="229" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="775" y="244" text-anchor="middle" class="gapText">◀ {mandarin,en}</text>
+
+        <!-- Row C: Analyze the whole script (Yc=314) -->
+        <text x="20" y="278" class="rowTitle">3 · Analyze the whole script</text>
+        <rect x="20" y="286" width="170" height="56" rx="8" class="boxN"></rect>
+        <text x="105" y="318" text-anchor="middle" class="boxText">Click “AI Analysis”</text>
+        <rect x="250" y="286" width="230" height="56" rx="8" class="boxN"></rect>
+        <text x="365" y="318" text-anchor="middle" class="boxText">send every Mandarin line</text>
+        <rect x="550" y="286" width="190" height="56" rx="8" class="boxG"></rect>
+        <text x="645" y="318" text-anchor="middle" class="boxText mono">/api/analyze-subtitles</text>
+        <rect x="810" y="286" width="170" height="56" rx="8" class="boxG"></rect>
+        <text x="895" y="318" text-anchor="middle" class="boxText">re-translate all lines</text>
+
+        <line x1="190" y1="314" x2="250" y2="314" class="lineN" marker-end="url(#arrN)"></line>
+        <text x="220" y="304" text-anchor="middle" class="gapText">click</text>
+        <line x1="480" y1="305" x2="550" y2="305" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="515" y="300" text-anchor="middle" class="gapText">all lines, joined</text>
+        <line x1="550" y1="323" x2="480" y2="323" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="515" y="338" text-anchor="middle" class="gapText">◀ enriched[]</text>
+        <line x1="740" y1="305" x2="810" y2="305" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="775" y="300" text-anchor="middle" class="gapText">full-script pass</text>
+        <line x1="810" y1="323" x2="740" y2="323" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="775" y="338" text-anchor="middle" class="gapText">◀ lines[]</text>
+
+        <!-- Row D: Ask the tutor (Yc=408) -->
+        <text x="20" y="372" class="rowTitle">4 · Ask the tutor</text>
+        <rect x="20" y="380" width="170" height="56" rx="8" class="boxN"></rect>
+        <text x="105" y="412" text-anchor="middle" class="boxText">Ask AI · type in chat</text>
+        <rect x="250" y="380" width="230" height="56" rx="8" class="boxN"></rect>
+        <text x="365" y="412" text-anchor="middle" class="boxText">append to chatHistory</text>
+        <rect x="550" y="380" width="190" height="56" rx="8" class="boxG"></rect>
+        <text x="645" y="412" text-anchor="middle" class="boxText mono">/api/chat</text>
+        <rect x="810" y="380" width="170" height="56" rx="8" class="boxG"></rect>
+        <text x="895" y="412" text-anchor="middle" class="boxText">tutor reply</text>
+
+        <line x1="190" y1="408" x2="250" y2="408" class="lineN" marker-end="url(#arrN)"></line>
+        <text x="220" y="398" text-anchor="middle" class="gapText">ask / type</text>
+        <line x1="480" y1="399" x2="550" y2="399" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="515" y="394" text-anchor="middle" class="gapText">message+context</text>
+        <line x1="550" y1="417" x2="480" y2="417" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="515" y="432" text-anchor="middle" class="gapText">◀ reply</text>
+        <line x1="740" y1="399" x2="810" y2="399" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="775" y="394" text-anchor="middle" class="gapText">prompt+turns</text>
+        <line x1="810" y1="417" x2="740" y2="417" class="lineG" marker-end="url(#arrG)"></line>
+        <text x="775" y="432" text-anchor="middle" class="gapText">◀ reply text</text>
+
+        <!-- Row E: Edit the script — stays local (Yc=502) -->
+        <text x="20" y="466" class="rowTitle">5 · Edit the script — stays local</text>
+        <rect x="20" y="474" width="170" height="56" rx="8" class="boxN"></rect>
+        <text x="105" y="506" text-anchor="middle" class="boxText">Search · delete · export</text>
+        <rect x="250" y="474" width="230" height="56" rx="8" class="boxL"></rect>
+        <text x="365" y="506" text-anchor="middle" class="boxText">array ops + file download</text>
+
+        <line x1="190" y1="502" x2="250" y2="502" class="lineL" marker-end="url(#arrL)"></line>
+        <text x="220" y="492" text-anchor="middle" class="gapText">click</text>
+        <line x1="480" y1="502" x2="518" y2="502" class="lineL" stroke-dasharray="3 3"></line>
+        <circle cx="522" cy="502" r="4" fill="none" class="lineL"></circle>
+        <text x="532" y="506" class="gapText" fill="var(--local)">no request sent</text>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <span><span class="sw net"></span>crosses the network to the Express server / Gemini</span>
+      <span><span class="sw local"></span>stays entirely in the browser</span>
+      <span><span class="sw opt"></span>dashed = only runs if you paste your own subtitle text</span>
+    </div>
+
+    <figcaption>
+      Every AI-backed action (rows 1–4) is a React state update that, when needed, POSTs to an Express
+      route, which calls Gemini and folds the JSON reply back into <code style="font-family: var(--font-mono)">currentEpisode.subtitles</code>
+      or <code style="font-family: var(--font-mono)">chatHistory</code> — that state change is what makes the video overlay, script list, and chat drawer re-render.
+      Row 5 (search, delete, export) never calls <code style="font-family: var(--font-mono)">fetch()</code> at all.
+    </figcaption>
+  </figure>
+
+  <ol class="flows">
+    <li>
+      <span class="n">1</span>
+      <div>
+        <h3>Load or switch an episode</h3>
+        <p>Pick a sample, or paste a video link with your own subtitle text. If you paste text, <code>handleCustomVideo()</code> sends it to Gemini to segment and translate; if you don't, a single placeholder line is used instead.</p>
+      </div>
+    </li>
+    <li>
+      <span class="n">2</span>
+      <div>
+        <h3>Scan the video frame (OCR)</h3>
+        <p>“OCR Current Frame” or the Auto Scanner crops the bottom strip of the paused frame to a canvas, base64-encodes it, and posts it to <code>/api/ocr-frame</code>, where Gemini's vision reads the burned-in Chinese text and translates it. The result is inserted into the script, sorted by time.</p>
+      </div>
+    </li>
+    <li>
+      <span class="n">3</span>
+      <div>
+        <h3>Analyze the whole script</h3>
+        <p>“AI Analysis” sends every Mandarin line in the episode to <code>/api/analyze-subtitles</code> in one call; Gemini returns pinyin, English, and Taiwanese-accent notes for all of them, which get merged back in while the original timestamps are kept.</p>
+      </div>
+    </li>
+    <li>
+      <span class="n">4</span>
+      <div>
+        <h3>Ask the tutor</h3>
+        <p>Clicking “Ask AI” on a line or character — or typing directly — posts your message plus recent chat history and the line/character you're asking about to <code>/api/chat</code>. The reply is appended to <code>chatHistory</code> and shown in the drawer.</p>
+      </div>
+    </li>
+    <li class="local-row">
+      <span class="n">5</span>
+      <div>
+        <h3>Edit the script — stays local</h3>
+        <p>Searching, deleting a line, exporting to <code>.srt</code>/<code>.json</code>, looping a line, or jumping to a timestamp are all plain array operations (or a browser file download) on state already in memory. None of it touches the server or spends a Gemini request.</p>
+      </div>
+    </li>
+  </ol>
+</div>

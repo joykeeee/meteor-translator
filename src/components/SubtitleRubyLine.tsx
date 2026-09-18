@@ -1,5 +1,5 @@
 import React from 'react';
-import { Volume2, Sparkles, RotateCcw, HelpCircle } from 'lucide-react';
+import { Volume2, Sparkles, RotateCcw, HelpCircle, Trash2 } from 'lucide-react';
 import { SubtitleLine, CharacterToken } from '../types';
 import { getToneColor } from '../utils/pinyinUtils';
 import { speakChinese } from '../utils/speechUtils';
@@ -13,7 +13,9 @@ interface SubtitleRubyLineProps {
   onAskAiAboutLine?: (line: SubtitleLine) => void;
   onJumpToTime?: (time: number) => void;
   onLoopLine?: (line: SubtitleLine) => void;
+  onDeleteLine?: (line: SubtitleLine) => void;
   size?: 'normal' | 'large';
+  hideTaiwanNotes?: boolean;
 }
 
 export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
@@ -25,7 +27,9 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
   onAskAiAboutLine,
   onJumpToTime,
   onLoopLine,
+  onDeleteLine,
   size = 'normal',
+  hideTaiwanNotes = false,
 }) => {
   const handlePlayAudio = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -104,6 +108,20 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
               <span>Ask AI</span>
             </button>
           )}
+          {onDeleteLine && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (window.confirm(`Delete this line from the script?\n\n${line.mandarin}\n${line.english}`)) {
+                  onDeleteLine(line);
+                }
+              }}
+              className="p-1.5 text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded transition"
+              title="Delete this line from the script"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -171,7 +189,7 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
       </div>
 
       {/* Taiwanese Cultural / Pronunciation / Slang Note */}
-      {line.taiwanNotes && (
+      {!hideTaiwanNotes && line.taiwanNotes && (
         <div className="mt-2.5 flex items-start gap-1.5 text-xs text-amber-800 dark:text-amber-200/90 bg-amber-50/80 dark:bg-amber-950/40 px-2.5 py-1.5 rounded-lg border border-amber-200/60 dark:border-amber-800/60">
           <span className="font-semibold shrink-0">🇹🇼 Accent &amp; Nuance:</span>
           <span className="leading-normal">{line.taiwanNotes}</span>

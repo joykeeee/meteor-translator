@@ -1,10 +1,12 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Sparkles, BookOpen, Volume2, LocateFixed, Scan, Camera } from 'lucide-react';
+import { Search, Sparkles, BookOpen, Volume2, LocateFixed, Scan, Camera, Download } from 'lucide-react';
 import { SubtitleLine, CharacterToken } from '../types';
 import { SubtitleRubyLine } from './SubtitleRubyLine';
+import { exportSubtitlesAsJson, exportSubtitlesAsSrt } from '../utils/exportUtils';
 
 interface SubtitleListProps {
   subtitles: SubtitleLine[];
+  episodeTitle: string;
   currentTime: number;
   activeLineId?: string;
   loopingLineId?: string;
@@ -14,6 +16,7 @@ interface SubtitleListProps {
   onAskAiAboutLine: (line: SubtitleLine) => void;
   onJumpToTime: (time: number) => void;
   onLoopLine?: (line: SubtitleLine) => void;
+  onDeleteLine?: (line: SubtitleLine) => void;
   onAnalyzeWithAi: () => void;
   isAnalyzing: boolean;
   onOpenOcrScanner?: () => void;
@@ -21,6 +24,7 @@ interface SubtitleListProps {
 
 export const SubtitleList: React.FC<SubtitleListProps> = ({
   subtitles,
+  episodeTitle,
   activeLineId,
   loopingLineId,
   colorCodedTones,
@@ -29,13 +33,28 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
   onAskAiAboutLine,
   onJumpToTime,
   onLoopLine,
+  onDeleteLine,
   onAnalyzeWithAi,
   isAnalyzing,
   onOpenOcrScanner,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
+  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close the export menu on an outside click
+  useEffect(() => {
+    if (!isExportMenuOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
+        setIsExportMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isExportMenuOpen]);
 
   // Auto-scroll to active subtitle line as video plays
   useEffect(() => {
@@ -114,6 +133,43 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
                 <span>OCR Scan</span>
               </button>
             )}
+
+            <div className="relative" ref={exportMenuRef}>
+              <button
+                onClick={() => setIsExportMenuOpen((v) => !v)}
+                disabled={subtitles.length === 0}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Save the script (OCR results and translations) to a file"
+              >
+                <Download className="w-3.5 h-3.5 text-rose-500" />
+                <span>Export</span>
+              </button>
+
+              {isExportMenuOpen && (
+                <div className="absolute right-0 mt-1 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-30 overflow-hidden animate-in fade-in">
+                  <button
+                    onClick={() => {
+                      exportSubtitlesAsSrt(subtitles, episodeTitle);
+                      setIsExportMenuOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                  >
+                    <span className="font-semibold block">Export as .srt</span>
+                    <span className="text-slate-500 dark:text-slate-400">Mandarin + pinyin + English, playable in any subtitle app</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      exportSubtitlesAsJson(subtitles, episodeTitle);
+                      setIsExportMenuOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border-t border-slate-100 dark:border-slate-800 transition"
+                  >
+                    <span className="font-semibold block">Export as .json</span>
+                    <span className="text-slate-500 dark:text-slate-400">Full data: every character's pinyin/tone and Taiwanese notes</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -176,6 +232,7 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
                 onAskAiAboutLine={onAskAiAboutLine}
                 onJumpToTime={onJumpToTime}
                 onLoopLine={onLoopLine}
+                onDeleteLine={onDeleteLine}
               />
             </div>
           ))

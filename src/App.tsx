@@ -321,6 +321,17 @@ export default function App() {
     setAnalysisStatus(`Added OCR subtitle: "${line.mandarin}" at ${line.startTime}s`);
   };
 
+  // Delete a line (and its translation) from the current episode's script
+  const handleDeleteLine = (line: SubtitleLine) => {
+    setCurrentEpisode((prev) => ({
+      ...prev,
+      subtitles: prev.subtitles.filter((s) => s.id !== line.id),
+    }));
+    if (loopingLine?.id === line.id) setLoopingLine(null);
+    if (chatTargetLine?.id === line.id) setChatTargetLine(null);
+    setAnalysisStatus(`Deleted line: "${line.mandarin}"`);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors">
       {/* Header */}
@@ -436,6 +447,7 @@ export default function App() {
           <div className="lg:col-span-5 h-[650px]">
             <SubtitleList
               subtitles={currentEpisode.subtitles}
+              episodeTitle={`${currentEpisode.showName} - ${currentEpisode.title}`}
               currentTime={currentTime}
               activeLineId={activeLine?.id}
               loopingLineId={loopingLine?.id}
@@ -452,6 +464,7 @@ export default function App() {
                   setCurrentTime(line.startTime);
                 }
               }}
+              onDeleteLine={handleDeleteLine}
               onAnalyzeWithAi={handleAnalyzeScriptWithAi}
               isAnalyzing={isAnalyzingScript}
               onOpenOcrScanner={() => setIsOcrModalOpen(true)}
