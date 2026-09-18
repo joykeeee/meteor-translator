@@ -50,7 +50,7 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
         {/* Header */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300">
               Character Inspector
             </span>
             <span className="text-xs text-slate-500">Taiwanese Mandarin</span>
@@ -95,9 +95,9 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
           <div className="mt-4 flex items-center justify-center gap-2">
             <button
               onClick={handleSpeak}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 hover:bg-rose-100 border border-rose-200 dark:border-rose-900 transition"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-cyan-50 dark:bg-cyan-950/50 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 border border-cyan-200 dark:border-cyan-900 transition"
             >
-              <Volume2 className="w-4 h-4 text-rose-500" />
+              <Volume2 className="w-4 h-4 text-cyan-500" />
               <span>Listen to "{token.char}"</span>
             </button>
           </div>
@@ -110,7 +110,7 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
               <span className="font-semibold">Context in this Subtitle Line:</span>
               <button
                 onClick={handleSpeakLine}
-                className="text-rose-600 hover:underline flex items-center gap-1"
+                className="text-cyan-600 hover:underline flex items-center gap-1"
               >
                 <Volume2 className="w-3 h-3" />
                 <span>Hear Full Line</span>
@@ -125,7 +125,7 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
           </div>
 
           {line.taiwanNotes && (
-            <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 text-amber-900 dark:text-amber-200 text-xs">
+            <div className="p-2.5 rounded-xl bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200/80 dark:border-yellow-800/60 text-yellow-900 dark:text-yellow-200 text-xs">
               <span className="font-bold">Taiwanese Usage Note: </span>
               {line.taiwanNotes}
             </div>
@@ -138,7 +138,7 @@ export const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
                 onAskAi(token.char, line);
                 onClose();
               }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-semibold text-xs sm:text-sm shadow-xs transition"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-yellow-600 hover:from-cyan-500 hover:to-yellow-500 text-white font-semibold text-xs sm:text-sm shadow-xs transition"
             >
               <Sparkles className="w-4 h-4" />
               <span>Ask AI Tutor About "{token.char}" &amp; Grammar</span>

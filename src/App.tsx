@@ -350,7 +350,7 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
         {/* Toast / Analysis Banner */}
         {analysisStatus && (
-          <div className="bg-gradient-to-r from-rose-500 to-amber-500 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium flex items-center justify-between shadow-xs animate-in fade-in">
+          <div className="bg-gradient-to-r from-cyan-500 to-yellow-400 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium flex items-center justify-between shadow-xs animate-in fade-in">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 animate-spin" />
               <span>{analysisStatus}</span>
@@ -381,7 +381,6 @@ export default function App() {
               colorCodedTones={colorCodedTones}
               showZhuyin={showZhuyin}
               onAskAiAboutLine={handleAskAiAboutLine}
-              onOpenOcrScanner={() => setIsOcrModalOpen(true)}
               onQuickOcrCurrentFrame={handleQuickOcrCurrentFrame}
               isOcrScanning={isQuickOcrScanning}
               onVideoRefReady={setVideoElement}
@@ -391,7 +390,7 @@ export default function App() {
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs">
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div>
-                  <span className="text-xs font-semibold text-rose-600 dark:text-rose-400">
+                  <span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400">
                     {currentEpisode.showName} • {currentEpisode.genre}
                   </span>
                   <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
@@ -402,7 +401,7 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setIsOcrModalOpen(true)}
-                    className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100 border border-rose-200 dark:border-rose-900 transition flex items-center gap-1.5"
+                    className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 border border-cyan-200 dark:border-cyan-900 transition flex items-center gap-1.5"
                   >
                     <Scan className="w-3.5 h-3.5" />
                     OCR Subtitle Scanner
@@ -465,8 +464,6 @@ export default function App() {
                 }
               }}
               onDeleteLine={handleDeleteLine}
-              onAnalyzeWithAi={handleAnalyzeScriptWithAi}
-              isAnalyzing={isAnalyzingScript}
               onOpenOcrScanner={() => setIsOcrModalOpen(true)}
             />
           </div>

@@ -56,7 +56,7 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
       {/* Top Header */}
       <div className="px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white shadow-xs">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-yellow-500 flex items-center justify-center text-white shadow-xs">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
@@ -83,16 +83,16 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
 
       {/* Active Selection Context Tag */}
       {(selectedChar || selectedLine) && (
-        <div className="bg-rose-50/90 dark:bg-rose-950/40 px-4 py-2 border-b border-rose-100 dark:border-rose-900/60 flex items-center justify-between text-xs">
+        <div className="bg-cyan-50/90 dark:bg-cyan-950/40 px-4 py-2 border-b border-cyan-100 dark:border-cyan-900/60 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 truncate">
-            <span className="font-semibold text-rose-800 dark:text-rose-300 shrink-0">Selected:</span>
+            <span className="font-semibold text-cyan-800 dark:text-cyan-300 shrink-0">Selected:</span>
             {selectedChar && (
-              <span className="font-serif font-bold text-base text-rose-900 dark:text-rose-100 bg-white dark:bg-slate-800 px-2 py-0.5 rounded shadow-2xs">
+              <span className="font-serif font-bold text-base text-cyan-900 dark:text-cyan-100 bg-white dark:bg-slate-800 px-2 py-0.5 rounded shadow-2xs">
                 {selectedChar}
               </span>
             )}
             {selectedLine && (
-              <span className="truncate text-rose-700 dark:text-rose-300/90">
+              <span className="truncate text-cyan-700 dark:text-cyan-300/90">
                 "{selectedLine.mandarin}"
               </span>
             )}
@@ -100,7 +100,7 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
           {onClearSelection && (
             <button
               onClick={onClearSelection}
-              className="text-rose-500 hover:text-rose-700 dark:hover:text-rose-300 p-0.5 ml-2"
+              className="text-cyan-500 hover:text-cyan-700 dark:hover:text-cyan-300 p-0.5 ml-2"
               title="Clear selection"
             >
               <X className="w-3.5 h-3.5" />
@@ -113,7 +113,7 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {chatHistory.length === 0 ? (
           <div className="text-center py-6 px-2 text-slate-500 dark:text-slate-400">
-            <div className="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 mx-auto flex items-center justify-center mb-3">
+            <div className="w-12 h-12 rounded-full bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 mx-auto flex items-center justify-center mb-3">
               <Bot className="w-6 h-6" />
             </div>
             <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-200 mb-1">
@@ -137,7 +137,7 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
                 <button
                   key={idx}
                   onClick={() => handleQuickPrompt(suggestion)}
-                  className="w-full text-left p-2 rounded-lg text-xs bg-slate-50 dark:bg-slate-800/80 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:border-rose-300 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition"
+                  className="w-full text-left p-2 rounded-lg text-xs bg-slate-50 dark:bg-slate-800/80 hover:bg-cyan-50 dark:hover:bg-cyan-950/30 hover:border-cyan-300 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition"
                 >
                   💬 {suggestion}
                 </button>
@@ -151,7 +151,7 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
               className={`flex gap-2.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.role === 'assistant' && (
-                <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white shrink-0 mt-0.5 shadow-2xs">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-cyan-500 to-yellow-500 flex items-center justify-center text-white shrink-0 mt-0.5 shadow-2xs">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
@@ -159,7 +159,7 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
               <div
                 className={`max-w-[85%] rounded-2xl p-3 text-xs sm:text-sm leading-relaxed ${
                   msg.role === 'user'
-                    ? 'bg-rose-600 text-white rounded-br-xs'
+                    ? 'bg-cyan-600 text-white rounded-br-xs'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-bl-xs border border-slate-200/80 dark:border-slate-700/80'
                 }`}
               >
@@ -176,7 +176,7 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
                         const chineseText = (msg.content.match(/[\u4e00-\u9fa5]+/g) || []).join(' ');
                         if (chineseText) speakChinese(chineseText);
                       }}
-                      className="inline-flex items-center gap-1 text-[11px] text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 font-medium transition"
+                      className="inline-flex items-center gap-1 text-[11px] text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 font-medium transition"
                     >
                       <Volume2 className="w-3.5 h-3.5" />
                       <span>Hear Pronunciation</span>
@@ -196,13 +196,13 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
 
         {isLoading && (
           <div className="flex gap-2.5 items-center text-slate-400 text-xs py-2">
-            <div className="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 animate-pulse">
+            <div className="w-7 h-7 rounded-full bg-cyan-500 text-white flex items-center justify-center shrink-0 animate-pulse">
               <Bot className="w-4 h-4" />
             </div>
             <div className="bg-slate-100 dark:bg-slate-800 px-3.5 py-2.5 rounded-2xl rounded-bl-xs flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-bounce" />
-              <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-              <span className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+              <span className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-bounce" />
+              <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-bounce [animation-delay:0.2s]" />
+              <span className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-bounce [animation-delay:0.4s]" />
               <span className="ml-1 text-slate-500 font-medium text-xs">AI Tutor is typing...</span>
             </div>
           </div>
@@ -226,12 +226,12 @@ export const ChatAgent: React.FC<ChatAgentProps> = ({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             disabled={isLoading}
-            className="w-full pl-3.5 pr-10 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/50 text-slate-900 dark:text-white placeholder-slate-400"
+            className="w-full pl-3.5 pr-10 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/50 text-slate-900 dark:text-white placeholder-slate-400"
           />
           <button
             type="submit"
             disabled={!inputText.trim() || isLoading}
-            className="absolute right-2 p-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition disabled:opacity-40 disabled:hover:bg-rose-600"
+            className="absolute right-2 p-1.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition disabled:opacity-40 disabled:hover:bg-cyan-600"
             title="Send"
           >
             <Send className="w-3.5 h-3.5" />

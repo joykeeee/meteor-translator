@@ -74,7 +74,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Film className="w-5 h-5 text-rose-600" />
+            <Film className="w-5 h-5 text-cyan-600" />
             <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
               Select or Upload Drama Episode
             </h3>
@@ -93,7 +93,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
             onClick={() => setActiveTab('samples')}
             className={`pb-2.5 transition border-b-2 ${
               activeTab === 'samples'
-                ? 'border-rose-600 text-rose-600 dark:text-rose-400 font-semibold'
+                ? 'border-cyan-600 text-cyan-600 dark:text-cyan-400 font-semibold'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -103,7 +103,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
             onClick={() => setActiveTab('upload')}
             className={`pb-2.5 transition border-b-2 ${
               activeTab === 'upload'
-                ? 'border-rose-600 text-rose-600 dark:text-rose-400 font-semibold'
+                ? 'border-cyan-600 text-cyan-600 dark:text-cyan-400 font-semibold'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -113,7 +113,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
             onClick={() => setActiveTab('link')}
             className={`pb-2.5 transition border-b-2 ${
               activeTab === 'link'
-                ? 'border-rose-600 text-rose-600 dark:text-rose-400 font-semibold'
+                ? 'border-cyan-600 text-cyan-600 dark:text-cyan-400 font-semibold'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -136,11 +136,11 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                       onSelectSample(ep);
                       onClose();
                     }}
-                    className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 hover:border-rose-400 dark:hover:border-rose-500 hover:bg-rose-50/40 dark:hover:bg-rose-950/20 transition cursor-pointer flex items-center justify-between gap-3 group"
+                    className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 hover:border-cyan-400 dark:hover:border-cyan-500 hover:bg-cyan-50/40 dark:hover:bg-cyan-950/20 transition cursor-pointer flex items-center justify-between gap-3 group"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition">
                           {ep.showName}
                         </span>
                         <span className="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
@@ -155,7 +155,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                       </p>
                     </div>
 
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-rose-100/80 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 shrink-0 group-hover:bg-rose-600 group-hover:text-white transition">
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-cyan-100/80 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-300 shrink-0 group-hover:bg-cyan-600 group-hover:text-white transition">
                       Load Episode
                     </span>
                   </div>
@@ -175,7 +175,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                 onDrop={handleDrop}
                 className={`border-2 border-dashed rounded-xl p-6 text-center transition cursor-pointer ${
                   dragActive
-                    ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/30'
+                    ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/30'
                     : 'border-slate-300 dark:border-slate-700 hover:border-slate-400'
                 }`}
               >
@@ -191,7 +191,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                   className="hidden"
                 />
                 <label htmlFor="video-file-input" className="cursor-pointer block">
-                  <Upload className="w-8 h-8 text-rose-500 mx-auto mb-2" />
+                  <Upload className="w-8 h-8 text-cyan-500 mx-auto mb-2" />
                   <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
                     {selectedFileName || 'Click to select or drag & drop episode video (MP4, WebM)'}
                   </p>
@@ -211,14 +211,14 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                   value={customSubtitles}
                   onChange={(e) => setCustomSubtitles(e.target.value)}
                   placeholder="Paste Mandarin lines or subtitles (e.g. 真的假的啦？我怎麼都不知道！)..."
-                  className="w-full p-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/40 text-slate-900 dark:text-white"
+                  className="w-full p-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/40 text-slate-900 dark:text-white"
                 />
               </div>
 
               <button
                 onClick={handleApplyCustom}
                 disabled={!uploadedVideoUrl}
-                className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs sm:text-sm transition disabled:opacity-50"
+                className="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-xs sm:text-sm transition disabled:opacity-50"
               >
                 Load Uploaded Video &amp; Analyze Subtitles
               </button>
@@ -238,12 +238,12 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                     placeholder="https://example.com/drama-episode.mp4"
                     value={videoLink}
                     onChange={(e) => setVideoLink(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/40 text-slate-900 dark:text-white"
+                    className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/40 text-slate-900 dark:text-white"
                   />
                 </div>
 
                 {isYouTubeOrVimeo && (
-                  <div className="mt-2 p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
+                  <div className="mt-2 p-2.5 rounded-lg bg-yellow-50 dark:bg-yellow-950/40 border border-yellow-200 dark:border-yellow-800 text-[11px] text-yellow-800 dark:text-yellow-300 leading-relaxed">
                     <strong>Note on YouTube/Vimeo links:</strong> HTML5 video players cannot directly render web page URLs like YouTube due to iframe cross-origin streaming rules. For the best experience, please upload an MP4/WebM video file directly (in the <em>Upload Video File</em> tab) or choose one of our preloaded authentic Taiwanese idol drama episodes.
                   </div>
                 )}
@@ -257,7 +257,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                       setVideoLink('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4');
                       setEpisodeTitle('Tears of Steel (Sci-Fi Dialogue Demo)');
                     }}
-                    className="text-rose-600 hover:underline"
+                    className="text-cyan-600 hover:underline"
                   >
                     Sample MP4 Stream 1
                   </button>
@@ -268,7 +268,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                       setVideoLink('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4');
                       setEpisodeTitle('Short Clip Drama Demo');
                     }}
-                    className="text-rose-600 hover:underline"
+                    className="text-cyan-600 hover:underline"
                   >
                     Sample MP4 Stream 2
                   </button>
@@ -284,7 +284,7 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                   placeholder="e.g. Someday or One Day - Episode 1"
                   value={episodeTitle}
                   onChange={(e) => setEpisodeTitle(e.target.value)}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/40 text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/40 text-slate-900 dark:text-white"
                 />
               </div>
 
@@ -297,14 +297,14 @@ export const VideoInputModal: React.FC<VideoInputModalProps> = ({
                   placeholder="Paste Mandarin lines here. Gemini AI will automatically extract character pinyin, English translations, and Taiwanese cultural notes..."
                   value={customSubtitles}
                   onChange={(e) => setCustomSubtitles(e.target.value)}
-                  className="w-full p-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/40 text-slate-900 dark:text-white"
+                  className="w-full p-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/40 text-slate-900 dark:text-white"
                 />
               </div>
 
               <button
                 onClick={handleApplyCustom}
                 disabled={!videoLink.trim()}
-                className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs sm:text-sm transition disabled:opacity-50"
+                className="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-xs sm:text-sm transition disabled:opacity-50"
               >
                 Load Video &amp; Parse Subtitles
               </button>

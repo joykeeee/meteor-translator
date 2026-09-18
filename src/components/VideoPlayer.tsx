@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Play, Pause, RotateCcw, Volume2, VolumeX, Maximize, FastForward, Repeat, Layers, Scan, Camera } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Maximize, FastForward, Repeat, Layers, Camera } from 'lucide-react';
 import { SubtitleLine } from '../types';
 import { SubtitleRubyLine } from './SubtitleRubyLine';
 
@@ -16,7 +16,6 @@ interface VideoPlayerProps {
   colorCodedTones: boolean;
   showZhuyin: boolean;
   onAskAiAboutLine: (line: SubtitleLine) => void;
-  onOpenOcrScanner?: () => void;
   onQuickOcrCurrentFrame?: () => void;
   isOcrScanning?: boolean;
   onVideoRefReady?: (videoEl: HTMLVideoElement | null) => void;
@@ -35,7 +34,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   colorCodedTones,
   showZhuyin,
   onAskAiAboutLine,
-  onOpenOcrScanner,
   onQuickOcrCurrentFrame,
   isOcrScanning,
   onVideoRefReady,
@@ -146,15 +144,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
         {/* Loop Status Pill Banner */}
         {loopingLine && (
-          <div className="absolute top-3 left-3 right-3 flex items-center justify-between bg-rose-950/85 backdrop-blur-md border border-rose-500/50 text-white px-3 py-1.5 rounded-xl shadow-lg z-20 animate-in fade-in text-xs">
+          <div className="absolute top-3 left-3 right-3 flex items-center justify-between bg-cyan-950/85 backdrop-blur-md border border-cyan-500/50 text-white px-3 py-1.5 rounded-xl shadow-lg z-20 animate-in fade-in text-xs">
             <div className="flex items-center gap-2 truncate">
-              <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping shrink-0" />
-              <span className="font-semibold text-rose-300 shrink-0">Looping Sentence:</span>
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
+              <span className="font-semibold text-cyan-300 shrink-0">Looping Sentence:</span>
               <span className="font-medium truncate">"{loopingLine.mandarin}"</span>
             </div>
             <button
               onClick={() => onToggleLoopLine(null)}
-              className="ml-2 shrink-0 px-2 py-0.5 rounded bg-rose-800/80 hover:bg-rose-700 text-white text-[11px] font-semibold transition"
+              className="ml-2 shrink-0 px-2 py-0.5 rounded bg-cyan-800/80 hover:bg-cyan-700 text-white text-[11px] font-semibold transition"
             >
               Exit Loop
             </button>
@@ -165,7 +163,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         {!isPlaying && (
           <button
             onClick={togglePlay}
-            className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-black/60 hover:bg-rose-600/90 text-white flex items-center justify-center backdrop-blur-xs transition-transform transform hover:scale-110"
+            className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-black/60 hover:bg-cyan-600/90 text-white flex items-center justify-center backdrop-blur-xs transition-transform transform hover:scale-110"
             title="Play Video"
           >
             <Play className="w-8 h-8 fill-current ml-1" />
@@ -174,14 +172,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
         {/* Video Subtitle Overlay (Exact Pinyin-Above, English-Below layout) */}
         {showOverlaySubtitle && activeLine && (
-          <div className="absolute bottom-4 left-4 right-4 pointer-events-auto flex justify-center">
-            <div className="max-w-lg w-full bg-slate-950/85 backdrop-blur-md rounded-lg p-2 border border-white/20 shadow-2xl">
+          <div className="absolute bottom-2 left-2 right-2 max-h-[25%] pointer-events-auto flex justify-center items-end">
+            <div className="max-w-md w-full max-h-full overflow-hidden bg-slate-950/85 backdrop-blur-md rounded-lg p-1.5 border border-white/20 shadow-2xl">
               <SubtitleRubyLine
                 line={activeLine}
                 colorCodedTones={colorCodedTones}
                 showZhuyin={showZhuyin}
                 onAskAiAboutLine={onAskAiAboutLine}
-                size="normal"
+                size="compact"
                 hideTaiwanNotes
               />
             </div>
@@ -200,7 +198,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             step="0.1"
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-rose-500 hover:h-2 transition-all"
+            className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-500 hover:h-2 transition-all"
           />
 
           {/* Markers for subtitles */}
@@ -212,7 +210,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   key={line.id}
                   style={{ left: `${leftPercent}%` }}
                   title={`${line.mandarin} (${line.english})`}
-                  className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-amber-400/70 rounded-full pointer-events-none"
+                  className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-yellow-400/70 rounded-full pointer-events-none"
                 />
               );
             })}
@@ -263,7 +261,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               }}
               className={`flex items-center gap-1 px-2.5 py-1 rounded transition text-xs font-semibold ${
                 loopingLine
-                  ? 'bg-rose-600 text-white ring-2 ring-rose-400/40 shadow-xs'
+                  ? 'bg-cyan-600 text-white ring-2 ring-cyan-400/40 shadow-xs'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
               title={
@@ -281,23 +279,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               <button
                 onClick={onQuickOcrCurrentFrame}
                 disabled={isOcrScanning}
-                className="flex items-center gap-1 px-2.5 py-1 rounded transition text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 hover:border-amber-400/60 shadow-xs disabled:opacity-50"
+                className="flex items-center gap-1 px-2.5 py-1 rounded transition text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-yellow-300 border border-yellow-500/30 hover:border-yellow-400/60 shadow-xs disabled:opacity-50"
                 title="Use Optical Character Recognition to read burned-in Chinese subtitles from this exact frame"
               >
-                <Camera className={`w-3.5 h-3.5 ${isOcrScanning ? 'animate-spin text-amber-400' : ''}`} />
+                <Camera className={`w-3.5 h-3.5 ${isOcrScanning ? 'animate-spin text-yellow-400' : ''}`} />
                 <span>{isOcrScanning ? 'Scanning...' : 'OCR Current Frame'}</span>
-              </button>
-            )}
-
-            {/* Full OCR Scanner Modal Launcher */}
-            {onOpenOcrScanner && (
-              <button
-                onClick={onOpenOcrScanner}
-                className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded transition text-xs font-semibold bg-gradient-to-r from-rose-900/60 to-amber-900/60 hover:from-rose-800/80 hover:to-amber-800/80 text-rose-200 border border-rose-500/40"
-                title="Open automated video timeline optical subtitle scanner"
-              >
-                <Scan className="w-3.5 h-3.5 text-rose-400" />
-                <span>Auto OCR Subtitles</span>
               </button>
             )}
           </div>
@@ -309,7 +295,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onClick={onToggleOverlaySubtitle}
               className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition ${
                 showOverlaySubtitle
-                  ? 'bg-slate-700 text-rose-300 font-semibold'
+                  ? 'bg-slate-700 text-cyan-300 font-semibold'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
               title="Toggle Pinyin & Subtitle overlay on video screen"
@@ -325,7 +311,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   key={rate}
                   onClick={() => changePlaybackRate(rate)}
                   className={`px-1.5 py-0.5 rounded transition ${
-                    playbackRate === rate ? 'bg-rose-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                    playbackRate === rate ? 'bg-cyan-600 text-white font-bold' : 'text-slate-400 hover:text-white'
                   }`}
                   title={`${rate}x speed (slower speed is great for learning pronunciation)`}
                 >

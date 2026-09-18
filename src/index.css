@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+/* Brand palette — overrides Tailwind's built-in cyan/yellow scales with
+   shades derived from the four given brand colors (500/600 = cyan,
+   200/400 = yellow are the exact requested hex values). Used for general
+   UI chrome only — the tone color-coding system (src/utils/pinyinUtils.ts)
+   deliberately keeps using rose/amber/emerald/blue/slate untouched, so the
+   two systems stay visually distinct from each other. */
+@theme {
+  --color-cyan-50: #eff8fa;
+  --color-cyan-100: #daf0f6;
+  --color-cyan-200: #b9e4ef;
+  --color-cyan-300: #86d3e4;
+  --color-cyan-400: #56c6dc;
+  --color-cyan-500: #2bbbd7;
+  --color-cyan-600: #218dae;
+  --color-cyan-700: #19708f;
+  --color-cyan-800: #15546f;
+  --color-cyan-900: #123e54;
+  --color-cyan-950: #0b2432;
+
+  --color-yellow-50: #fefcf0;
+  --color-yellow-100: #fef7dd;
+  --color-yellow-200: #fce59a;
+  --color-yellow-300: #fddf7c;
+  --color-yellow-400: #ffd758;
+  --color-yellow-500: #ffc629;
+  --color-yellow-600: #ef9906;
+  --color-yellow-700: #c26f0a;
+  --color-yellow-800: #97520c;
+  --color-yellow-900: #773d0d;
+  --color-yellow-950: #43210a;
+}

@@ -29,7 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Logo & Current Episode */}
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white shadow-sm shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-yellow-500 flex items-center justify-center text-white shadow-sm shrink-0">
             <span className="font-bold text-lg tracking-wider font-serif">台</span>
           </div>
           <div className="min-w-0">
@@ -37,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
               <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">
                 Taiwanese Drama Subtitle Tutor
               </h1>
-              <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300">
+              <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300">
                 Mandarin &amp; Pinyin
               </span>
             </div>
@@ -90,8 +90,8 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={onToggleChat}
             className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-semibold rounded-lg shadow-xs transition ${
               isChatOpen
-                ? 'bg-rose-600 text-white hover:bg-rose-700'
-                : 'bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white'
+                ? 'bg-cyan-600 text-white hover:bg-cyan-700'
+                : 'bg-gradient-to-r from-cyan-600 to-yellow-600 hover:from-cyan-500 hover:to-yellow-500 text-white'
             }`}
           >
             <Sparkles className="w-4 h-4 animate-pulse" />
