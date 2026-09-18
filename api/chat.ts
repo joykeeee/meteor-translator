@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { handleChat } from '../server/geminiHandlers';
+import { handleChat } from '../server/geminiHandlers.js';
 
 export const config = { maxDuration: 60 };
 

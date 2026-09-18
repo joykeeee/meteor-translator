@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
-import { handleHealth, handleAnalyzeSubtitles, handleOcrFrame, handleChat } from './server/geminiHandlers';
+import { handleHealth, handleAnalyzeSubtitles, handleOcrFrame, handleChat } from './server/geminiHandlers.js';
 
 dotenv.config();
 

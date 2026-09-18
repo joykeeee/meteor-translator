@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { handleOcrFrame } from '../server/geminiHandlers';
+import { handleOcrFrame } from '../server/geminiHandlers.js';
 
 // Vision calls plus model-fallback retries can run long.
 export const config = { maxDuration: 60 };
