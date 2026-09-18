@@ -1,0 +1,317 @@
+import React, { useState, useRef } from 'react';
+import { X, Upload, Link, Film, Sparkles, Check } from 'lucide-react';
+import { DramaEpisode } from '../types';
+import { SAMPLE_EPISODES } from '../data/sampleEpisodes';
+
+interface VideoInputModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelectSample: (episode: DramaEpisode) => void;
+  onCustomVideo: (data: {
+    title: string;
+    videoUrl: string;
+    subtitleText?: string;
+  }) => void;
+}
+
+export const VideoInputModal: React.FC<VideoInputModalProps> = ({
+  isOpen,
+  onClose,
+  onSelectSample,
+  onCustomVideo,
+}) => {
+  const [activeTab, setActiveTab] = useState<'samples' | 'upload' | 'link'>('samples');
+  const [videoLink, setVideoLink] = useState('');
+  const [episodeTitle, setEpisodeTitle] = useState('');
+  const [customSubtitles, setCustomSubtitles] = useState('');
+  const [dragActive, setDragActive] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string | null>(null);
+  const prevBlobUrlRef = useRef<string | null>(null);
+
+  if (!isOpen) return null;
+
+  const handleFileUpload = (file: File) => {
+    if (file && file.type.startsWith('video/')) {
+      // Clean up previous blob URL to avoid memory leak
+      if (prevBlobUrlRef.current) {
+        URL.revokeObjectURL(prevBlobUrlRef.current);
+      }
+      const blobUrl = URL.createObjectURL(file);
+      prevBlobUrlRef.current = blobUrl;
+      setUploadedVideoUrl(blobUrl);
+      setSelectedFileName(file.name);
+      setEpisodeTitle(file.name.replace(/\.[^/.]+$/, ''));
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
+  const isYouTubeOrVimeo = /youtube\.com|youtu\.be|vimeo\.com/i.test(videoLink);
+
+  const handleApplyCustom = () => {
+    const url = activeTab === 'upload' ? uploadedVideoUrl : videoLink;
+    if (!url) return;
+
+    onCustomVideo({
+      title: episodeTitle || 'Custom Drama Episode',
+      videoUrl: url,
+      subtitleText: customSubtitles.trim() || undefined,
+    });
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        {/* Header */}
+        <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Film className="w-5 h-5 text-rose-600" />
+            <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+              Select or Upload Drama Episode
+            </h3>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Tab switcher */}
+        <div className="flex border-b border-slate-200 dark:border-slate-800 px-5 pt-3 gap-4 text-xs sm:text-sm font-medium">
+          <button
+            onClick={() => setActiveTab('samples')}
+            className={`pb-2.5 transition border-b-2 ${
+              activeTab === 'samples'
+                ? 'border-rose-600 text-rose-600 dark:text-rose-400 font-semibold'
+                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
+          >
+            Curated Taiwanese Soap Operas
+          </button>
+          <button
+            onClick={() => setActiveTab('upload')}
+            className={`pb-2.5 transition border-b-2 ${
+              activeTab === 'upload'
+                ? 'border-rose-600 text-rose-600 dark:text-rose-400 font-semibold'
+                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
+          >
+            Upload Video File
+          </button>
+          <button
+            onClick={() => setActiveTab('link')}
+            className={`pb-2.5 transition border-b-2 ${
+              activeTab === 'link'
+                ? 'border-rose-600 text-rose-600 dark:text-rose-400 font-semibold'
+                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
+          >
+            Link Video URL
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="p-5 overflow-y-auto space-y-4">
+          {activeTab === 'samples' && (
+            <div className="space-y-3">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Choose one of these authentic Taiwanese idol drama episodes featuring iconic dialogues, aligned character pinyin, and colloquial expressions:
+              </p>
+              <div className="grid grid-cols-1 gap-3">
+                {SAMPLE_EPISODES.map((ep) => (
+                  <div
+                    key={ep.id}
+                    onClick={() => {
+                      onSelectSample(ep);
+                      onClose();
+                    }}
+                    className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 hover:border-rose-400 dark:hover:border-rose-500 hover:bg-rose-50/40 dark:hover:bg-rose-950/20 transition cursor-pointer flex items-center justify-between gap-3 group"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition">
+                          {ep.showName}
+                        </span>
+                        <span className="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                          {ep.year} • {ep.genre}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 font-medium mt-0.5">
+                        {ep.title}
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
+                        {ep.description}
+                      </p>
+                    </div>
+
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-rose-100/80 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 shrink-0 group-hover:bg-rose-600 group-hover:text-white transition">
+                      Load Episode
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'upload' && (
+            <div className="space-y-4">
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragActive(true);
+                }}
+                onDragLeave={() => setDragActive(false)}
+                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-xl p-6 text-center transition cursor-pointer ${
+                  dragActive
+                    ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/30'
+                    : 'border-slate-300 dark:border-slate-700 hover:border-slate-400'
+                }`}
+              >
+                <input
+                  type="file"
+                  id="video-file-input"
+                  accept="video/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileUpload(e.target.files[0]);
+                    }
+                  }}
+                  className="hidden"
+                />
+                <label htmlFor="video-file-input" className="cursor-pointer block">
+                  <Upload className="w-8 h-8 text-rose-500 mx-auto mb-2" />
+                  <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    {selectedFileName || 'Click to select or drag & drop episode video (MP4, WebM)'}
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Plays natively inside the browser with synchronized subtitles and pronunciation
+                  </p>
+                </label>
+              </div>
+
+              {/* Optional Subtitle text input */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Optional Subtitle Script / Transcript (AI will analyze, align Pinyin, and translate):
+                </label>
+                <textarea
+                  rows={3}
+                  value={customSubtitles}
+                  onChange={(e) => setCustomSubtitles(e.target.value)}
+                  placeholder="Paste Mandarin lines or subtitles (e.g. 真的假的啦？我怎麼都不知道！)..."
+                  className="w-full p-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/40 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              <button
+                onClick={handleApplyCustom}
+                disabled={!uploadedVideoUrl}
+                className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs sm:text-sm transition disabled:opacity-50"
+              >
+                Load Uploaded Video &amp; Analyze Subtitles
+              </button>
+            </div>
+          )}
+
+          {activeTab === 'link' && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Video URL (Direct MP4, WebM, or media stream):
+                </label>
+                <div className="relative">
+                  <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="url"
+                    placeholder="https://example.com/drama-episode.mp4"
+                    value={videoLink}
+                    onChange={(e) => setVideoLink(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/40 text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                {isYouTubeOrVimeo && (
+                  <div className="mt-2 p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
+                    <strong>Note on YouTube/Vimeo links:</strong> HTML5 video players cannot directly render web page URLs like YouTube due to iframe cross-origin streaming rules. For the best experience, please upload an MP4/WebM video file directly (in the <em>Upload Video File</em> tab) or choose one of our preloaded authentic Taiwanese idol drama episodes.
+                  </div>
+                )}
+
+                {/* Quick test direct sample URLs */}
+                <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
+                  <span>Quick test direct link:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVideoLink('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4');
+                      setEpisodeTitle('Tears of Steel (Sci-Fi Dialogue Demo)');
+                    }}
+                    className="text-rose-600 hover:underline"
+                  >
+                    Sample MP4 Stream 1
+                  </button>
+                  <span>•</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVideoLink('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4');
+                      setEpisodeTitle('Short Clip Drama Demo');
+                    }}
+                    className="text-rose-600 hover:underline"
+                  >
+                    Sample MP4 Stream 2
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Episode Title:
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Someday or One Day - Episode 1"
+                  value={episodeTitle}
+                  onChange={(e) => setEpisodeTitle(e.target.value)}
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/40 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Subtitles or Script text (Mandarin Chinese):
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Paste Mandarin lines here. Gemini AI will automatically extract character pinyin, English translations, and Taiwanese cultural notes..."
+                  value={customSubtitles}
+                  onChange={(e) => setCustomSubtitles(e.target.value)}
+                  className="w-full p-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/40 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              <button
+                onClick={handleApplyCustom}
+                disabled={!videoLink.trim()}
+                className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs sm:text-sm transition disabled:opacity-50"
+              >
+                Load Video &amp; Parse Subtitles
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};

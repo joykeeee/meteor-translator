@@ -1,0 +1,6 @@
+{
+  "name": "Taiwanese Drama Mandarin Subtitle & Pronunciation Tutor",
+  "description": "Analyze Mandarin subtitles in Taiwanese soap operas via optical character recognition (OCR) or scripts, with pinyin aligned above each character, English translation below, and an interactive AI chatbot agent for pronunciation and language questions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
