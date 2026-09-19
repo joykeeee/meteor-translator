@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Video, MessageSquare, Volume2, BookOpen, Settings } from 'lucide-react';
+import { Sparkles, Video, MessageSquare, Volume2, BookOpen, Settings, BookMarked } from 'lucide-react';
 
 interface HeaderProps {
   onOpenVideoModal: () => void;
@@ -10,6 +10,8 @@ interface HeaderProps {
   onToggleZhuyin: () => void;
   colorCodedTones: boolean;
   onToggleColorTones: () => void;
+  vocabularyCount: number;
+  onOpenVocabulary: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -20,6 +22,8 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleZhuyin,
   colorCodedTones,
   onToggleColorTones,
+  vocabularyCount,
+  onOpenVocabulary,
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur border-b border-gray-200 dark:border-gray-800 transition-colors">
@@ -77,6 +81,21 @@ export const Header: React.FC<HeaderProps> = ({
             <Video className="w-4 h-4 text-gray-500" />
             <span className="hidden sm:inline">Upload / Link Episode</span>
             <span className="sm:hidden">Video</span>
+          </button>
+
+          {/* Vocabulary Review List Button */}
+          <button
+            onClick={onOpenVocabulary}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300/80 dark:border-gray-700 transition whitespace-nowrap shrink-0"
+            title="Saved phrases from every episode you've worked with"
+          >
+            <BookMarked className="w-4 h-4 text-gray-500" />
+            <span className="hidden sm:inline">Vocabulary</span>
+            {vocabularyCount > 0 && (
+              <span className="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded-full font-mono">
+                {vocabularyCount}
+              </span>
+            )}
           </button>
 
           {/* AI Chatbot Agent Button */}

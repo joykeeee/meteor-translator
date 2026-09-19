@@ -6,10 +6,19 @@ import { ChatAgent } from './components/ChatAgent';
 import { VideoInputModal } from './components/VideoInputModal';
 import { CharacterDetailModal } from './components/CharacterDetailModal';
 import { OcrScannerModal } from './components/OcrScannerModal';
+import { VocabularyModal } from './components/VocabularyModal';
 import { SAMPLE_EPISODES } from './data/sampleEpisodes';
 import { DramaEpisode, SubtitleLine, CharacterToken, ChatMessage } from './types';
 import { parseChineseToTokens } from './utils/pinyinUtils';
 import { captureFrameFromVideo, scanFrameOcr } from './utils/ocrService';
+import {
+  VocabularyEntry,
+  getVocabulary,
+  addVocabularyEntry,
+  removeVocabularyEntry,
+  clearVocabulary,
+  exportVocabularyAsText,
+} from './utils/vocabularyStore';
 import { Sparkles, Info, HelpCircle, Film, BookOpen, Volume2, RefreshCw, Scan, Camera } from 'lucide-react';
 
 export default function App() {
@@ -29,6 +38,8 @@ export default function App() {
   // Modals & Panels
   const [isVideoModalOpen, setIsVideoModalOpen] = useState<boolean>(false);
   const [isOcrModalOpen, setIsOcrModalOpen] = useState<boolean>(false);
+  const [isVocabularyModalOpen, setIsVocabularyModalOpen] = useState<boolean>(false);
+  const [vocabulary, setVocabulary] = useState<VocabularyEntry[]>(() => getVocabulary());
   const [isQuickOcrScanning, setIsQuickOcrScanning] = useState<boolean>(false);
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [selectedCharacterToken, setSelectedCharacterToken] = useState<CharacterToken | null>(null);
@@ -327,6 +338,54 @@ export default function App() {
     setAnalysisStatus(`Added OCR subtitle: "${line.mandarin}" at ${line.startTime}s`);
   };
 
+  // Save a selected phrase (from the script's "Select Phrase" mode) to the vocabulary list.
+  // Pinyin/zhuyin already come from the existing per-character tokens; only the English
+  // gloss needs a fresh, deliberately short (non-tutor) translation call.
+  const handleSaveToVocabulary = async (params: {
+    mandarin: string;
+    pinyin: string;
+    zhuyin: string;
+    sourceEpisode: string;
+  }) => {
+    setAnalysisStatus(`Saving "${params.mandarin}" to vocabulary...`);
+
+    let english = '';
+    try {
+      const res = await fetch('/api/translate-phrase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phrase: params.mandarin }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        english = (data.translation || '').trim();
+      }
+    } catch (err) {
+      console.warn('Phrase translation error:', err);
+    }
+
+    const entry: VocabularyEntry = {
+      id: `vocab-${Date.now()}`,
+      mandarin: params.mandarin,
+      pinyin: params.pinyin,
+      zhuyin: params.zhuyin,
+      english: english || '(translation unavailable — edit later)',
+      sourceEpisode: params.sourceEpisode,
+      savedAt: Date.now(),
+    };
+
+    setVocabulary(addVocabularyEntry(entry));
+    setAnalysisStatus(`Saved "${params.mandarin}" to your vocabulary list.`);
+  };
+
+  const handleRemoveVocabularyEntry = (id: string) => {
+    setVocabulary(removeVocabularyEntry(id));
+  };
+
+  const handleClearVocabulary = () => {
+    setVocabulary(clearVocabulary());
+  };
+
   // Delete a line (and its translation) from the current episode's script
   const handleDeleteLine = (line: SubtitleLine) => {
     setCurrentEpisode((prev) => ({
@@ -349,6 +408,8 @@ export default function App() {
         onToggleZhuyin={() => setShowZhuyin(!showZhuyin)}
         colorCodedTones={colorCodedTones}
         onToggleColorTones={() => setColorCodedTones(!colorCodedTones)}
+        vocabularyCount={vocabulary.length}
+        onOpenVocabulary={() => setIsVocabularyModalOpen(true)}
       />
 
       {/* Main Learning Workspace */}
@@ -472,6 +533,7 @@ export default function App() {
               }}
               onDeleteLine={handleDeleteLine}
               onOpenOcrScanner={() => setIsOcrModalOpen(true)}
+              onSaveToVocabulary={handleSaveToVocabulary}
             />
           </div>
         </div>
@@ -516,6 +578,16 @@ export default function App() {
         onAddSingleSubtitle={handleAddSingleOcrSubtitle}
         colorCodedTones={colorCodedTones}
         showZhuyin={showZhuyin}
+      />
+
+      {/* Vocabulary Review List Modal */}
+      <VocabularyModal
+        isOpen={isVocabularyModalOpen}
+        onClose={() => setIsVocabularyModalOpen(false)}
+        entries={vocabulary}
+        onRemove={handleRemoveVocabularyEntry}
+        onClearAll={handleClearVocabulary}
+        onExport={() => exportVocabularyAsText(vocabulary)}
       />
 
       {/* Character Inspector Modal */}

@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
-import { handleHealth, handleAnalyzeSubtitles, handleOcrFrame, handleChat } from './server/geminiHandlers.js';
+import { handleHealth, handleAnalyzeSubtitles, handleOcrFrame, handleChat, handleTranslatePhrase } from './server/geminiHandlers.js';
 
 dotenv.config();
 
@@ -35,6 +35,11 @@ app.post('/api/ocr-frame', async (req, res) => {
 
 app.post('/api/chat', async (req, res) => {
   const result = await handleChat(req.body);
+  res.status(result.status).json(result.body);
+});
+
+app.post('/api/translate-phrase', async (req, res) => {
+  const result = await handleTranslatePhrase(req.body);
   res.status(result.status).json(result.body);
 });
 

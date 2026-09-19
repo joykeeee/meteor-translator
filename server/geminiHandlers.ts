@@ -465,6 +465,49 @@ If no subtitle text is visible:
   }
 }
 
+// Translates a single selected word/phrase for the vocabulary list. Deliberately
+// asks for ONLY a short gloss - no grammar notes, no tutoring, unlike /api/chat.
+export async function handleTranslatePhrase(input: {
+  phrase?: string;
+  contextLine?: string;
+}): Promise<RouteResult> {
+  try {
+    const phrase = (input.phrase || '').trim();
+    if (!phrase) {
+      return { status: 400, body: { error: 'phrase is required' } };
+    }
+
+    const ai = getGeminiClient();
+    if (!ai) {
+      return { status: 200, body: { translation: '' } };
+    }
+
+    try {
+      const prompt = `Give a short, natural English translation of this Mandarin Chinese word or phrase${
+        input.contextLine ? `, as used in the sentence "${input.contextLine}"` : ''
+      }.
+
+Word/phrase: "${phrase}"
+
+Reply with ONLY the English translation (1-6 words). No explanation, no pinyin, no grammar notes, no alternate readings.`;
+
+      const { text } = await generateWithModelFallback(ai, prompt, {
+        preferredModel: 'gemini-3.1-flash-lite',
+        maxAttemptsPerModel: 1,
+      });
+
+      const translation = text.trim().replace(/^["'“「]|["'”」]$/g, '');
+      return { status: 200, body: { translation } };
+    } catch (geminiErr: any) {
+      console.warn('Phrase translation unavailable:', geminiErr?.message || geminiErr);
+      return { status: 200, body: { translation: '' } };
+    }
+  } catch (err: any) {
+    console.error('Translate phrase error:', err);
+    return { status: 500, body: { error: err.message || 'Translation failed' } };
+  }
+}
+
 export async function handleChat(input: {
   message?: string;
   history?: any[];

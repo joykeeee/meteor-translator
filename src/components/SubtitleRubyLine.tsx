@@ -16,6 +16,9 @@ interface SubtitleRubyLineProps {
   onDeleteLine?: (line: SubtitleLine) => void;
   size?: 'compact' | 'normal' | 'large';
   hideTaiwanNotes?: boolean;
+  phraseSelectionMode?: boolean;
+  selectedCharRange?: { start: number; end: number } | null;
+  onCharacterRangeClick?: (index: number, line: SubtitleLine) => void;
 }
 
 export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
@@ -30,6 +33,9 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
   onDeleteLine,
   size = 'normal',
   hideTaiwanNotes = false,
+  phraseSelectionMode = false,
+  selectedCharRange = null,
+  onCharacterRangeClick,
 }) => {
   const handlePlayAudio = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,6 +52,9 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
 
   const isLarge = size === 'large';
   const isCompact = size === 'compact';
+
+  const isIndexSelected = (index: number) =>
+    !!selectedCharRange && index >= selectedCharRange.start && index <= selectedCharRange.end;
 
   return (
     <div
@@ -129,13 +138,15 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
       {/* Primary Mandarin Text with Aligned Pinyin Above Every Character */}
       <div className={`flex flex-wrap items-end gap-x-1 sm:gap-x-1.5 select-text leading-none ${isCompact ? 'gap-y-1 my-0.5' : 'gap-y-3 my-2'}`}>
         {line.characters.map((token, index) => {
+          const selected = phraseSelectionMode && isIndexSelected(index);
+
           if (token.isPunctuation) {
             return (
               <span
                 key={index}
-                className={`self-end font-sans text-gray-400 dark:text-gray-500 px-0.5 ${
-                  isCompact ? 'text-sm sm:text-base' : isLarge ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl'
-                }`}
+                className={`self-end font-sans text-gray-400 dark:text-gray-500 px-0.5 rounded transition-colors ${
+                  selected ? 'bg-yellow-200/80 dark:bg-yellow-500/30' : ''
+                } ${isCompact ? 'text-sm sm:text-base' : isLarge ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl'}`}
               >
                 {token.char}
               </span>
@@ -147,11 +158,28 @@ export const SubtitleRubyLine: React.FC<SubtitleRubyLineProps> = ({
           return (
             <button
               key={index}
-              onClick={(e) => handleCharacterClick(e, token)}
-              className={`group/char inline-flex flex-col items-center justify-end rounded-lg transition cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/70 focus:outline-none focus:ring-1 focus:ring-cyan-400 ${
-                isCompact ? 'p-0.5 min-w-[16px]' : 'p-1'
-              } ${isLarge ? 'min-w-[32px]' : !isCompact ? 'min-w-[26px]' : ''}`}
-              title={`Click to inspect '${token.char}' (${token.pinyin}, Tone ${token.tone})`}
+              onClick={(e) => {
+                if (phraseSelectionMode && onCharacterRangeClick) {
+                  e.stopPropagation();
+                  onCharacterRangeClick(index, line);
+                } else {
+                  handleCharacterClick(e, token);
+                }
+              }}
+              className={`group/char inline-flex flex-col items-center justify-end rounded-lg transition cursor-pointer focus:outline-none focus:ring-1 focus:ring-cyan-400 ${
+                selected
+                  ? 'bg-yellow-200/80 dark:bg-yellow-500/30 hover:bg-yellow-300/80 dark:hover:bg-yellow-500/40'
+                  : phraseSelectionMode
+                  ? 'hover:bg-yellow-100/70 dark:hover:bg-yellow-500/15'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-700/70'
+              } ${isCompact ? 'p-0.5 min-w-[16px]' : 'p-1'} ${
+                isLarge ? 'min-w-[32px]' : !isCompact ? 'min-w-[26px]' : ''
+              }`}
+              title={
+                phraseSelectionMode
+                  ? `Click to ${selectedCharRange ? 'extend selection to' : 'start selecting from'} '${token.char}'`
+                  : `Click to inspect '${token.char}' (${token.pinyin}, Tone ${token.tone})`
+              }
             >
               {/* Pinyin (Above the character) */}
               <span

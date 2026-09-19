@@ -1,8 +1,15 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, BookOpen, Volume2, LocateFixed, Scan, Camera, Download } from 'lucide-react';
+import { Search, BookOpen, Volume2, LocateFixed, Scan, Camera, Download, Highlighter, BookMarked, X } from 'lucide-react';
 import { SubtitleLine, CharacterToken } from '../types';
 import { SubtitleRubyLine } from './SubtitleRubyLine';
 import { exportSubtitlesAsJson, exportSubtitlesAsSrt } from '../utils/exportUtils';
+
+interface PhraseSelection {
+  lineId: string;
+  anchor: number;
+  start: number;
+  end: number;
+}
 
 interface SubtitleListProps {
   subtitles: SubtitleLine[];
@@ -18,6 +25,7 @@ interface SubtitleListProps {
   onLoopLine?: (line: SubtitleLine) => void;
   onDeleteLine?: (line: SubtitleLine) => void;
   onOpenOcrScanner?: () => void;
+  onSaveToVocabulary?: (params: { mandarin: string; pinyin: string; zhuyin: string; sourceEpisode: string }) => void;
 }
 
 export const SubtitleList: React.FC<SubtitleListProps> = ({
@@ -33,12 +41,46 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
   onLoopLine,
   onDeleteLine,
   onOpenOcrScanner,
+  onSaveToVocabulary,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+  const [phraseSelectionMode, setPhraseSelectionMode] = useState(false);
+  const [phraseSelection, setPhraseSelection] = useState<PhraseSelection | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
+
+  const handleCharacterRangeClick = (index: number, line: SubtitleLine) => {
+    setPhraseSelection((prev) => {
+      if (!prev || prev.lineId !== line.id) {
+        return { lineId: line.id, anchor: index, start: index, end: index };
+      }
+      return {
+        lineId: line.id,
+        anchor: prev.anchor,
+        start: Math.min(prev.anchor, index),
+        end: Math.max(prev.anchor, index),
+      };
+    });
+  };
+
+  const selectedPhrase = useMemo(() => {
+    if (!phraseSelection) return null;
+    const line = subtitles.find((s) => s.id === phraseSelection.lineId);
+    if (!line) return null;
+    const tokens = line.characters.slice(phraseSelection.start, phraseSelection.end + 1);
+    const mandarin = tokens.map((t) => t.char).join('');
+    const pinyin = tokens.filter((t) => t.pinyin).map((t) => t.pinyin).join(' ');
+    const zhuyin = tokens.filter((t) => t.zhuyin).map((t) => t.zhuyin).join(' ');
+    return { mandarin, pinyin, zhuyin };
+  }, [phraseSelection, subtitles]);
+
+  const handleSaveSelection = () => {
+    if (!selectedPhrase || !selectedPhrase.mandarin || !onSaveToVocabulary) return;
+    onSaveToVocabulary({ ...selectedPhrase, sourceEpisode: episodeTitle });
+    setPhraseSelection(null);
+  };
 
   // Close the export menu on an outside click
   useEffect(() => {
@@ -101,6 +143,24 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
               <span className="hidden sm:inline">Follow: {autoScroll ? 'ON' : 'OFF'}</span>
             </button>
 
+            {onSaveToVocabulary && (
+              <button
+                onClick={() => {
+                  setPhraseSelectionMode((v) => !v);
+                  setPhraseSelection(null);
+                }}
+                className={`flex items-center gap-1 px-2 py-1 text-xs rounded-lg transition border whitespace-nowrap shrink-0 ${
+                  phraseSelectionMode
+                    ? 'bg-yellow-50 dark:bg-yellow-950/40 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-800 font-semibold'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-500 border-gray-200 dark:border-gray-700'
+                }`}
+                title="Click a run of characters to select a word or phrase, then save it to your vocabulary list"
+              >
+                <Highlighter className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Select Phrase</span>
+              </button>
+            )}
+
             {onOpenOcrScanner && (
               <button
                 onClick={onOpenOcrScanner}
@@ -162,6 +222,38 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
             className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/40 text-gray-900 dark:text-white placeholder-gray-400"
           />
         </div>
+
+        {/* Phrase selection action bar */}
+        {selectedPhrase && selectedPhrase.mandarin && (
+          <div className="mt-3 p-2.5 rounded-xl bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800/60 flex items-center justify-between gap-2">
+            <div className="min-w-0 flex items-baseline gap-2">
+              <span className="font-serif text-base font-bold text-gray-900 dark:text-white truncate">
+                {selectedPhrase.mandarin}
+              </span>
+              {selectedPhrase.pinyin && (
+                <span className="font-mono text-xs text-yellow-700 dark:text-yellow-400 truncate">
+                  {selectedPhrase.pinyin}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={handleSaveSelection}
+                className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-yellow-600 hover:bg-yellow-700 text-white transition"
+              >
+                <BookMarked className="w-3.5 h-3.5" />
+                Save to Vocabulary
+              </button>
+              <button
+                onClick={() => setPhraseSelection(null)}
+                className="p-1 text-yellow-700 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-200 rounded transition"
+                title="Clear selection"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Subtitles Scroll List */}
@@ -211,6 +303,13 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
                 onJumpToTime={onJumpToTime}
                 onLoopLine={onLoopLine}
                 onDeleteLine={onDeleteLine}
+                phraseSelectionMode={phraseSelectionMode}
+                selectedCharRange={
+                  phraseSelection && phraseSelection.lineId === line.id
+                    ? { start: phraseSelection.start, end: phraseSelection.end }
+                    : null
+                }
+                onCharacterRangeClick={handleCharacterRangeClick}
               />
             </div>
           ))
