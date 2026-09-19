@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, BookOpen, Volume2, LocateFixed, Scan, Camera, Download, Highlighter, BookMarked, X } from 'lucide-react';
+import { BookOpen, Volume2, LocateFixed, Scan, Camera, Download, Highlighter, BookMarked, X } from 'lucide-react';
 import { SubtitleLine, CharacterToken } from '../types';
 import { SubtitleRubyLine } from './SubtitleRubyLine';
 import { exportSubtitlesAsJson, exportSubtitlesAsSrt } from '../utils/exportUtils';
@@ -43,7 +43,6 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
   onOpenOcrScanner,
   onSaveToVocabulary,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const [phraseSelectionMode, setPhraseSelectionMode] = useState(false);
@@ -96,51 +95,38 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
 
   // Auto-scroll to active subtitle line as video plays
   useEffect(() => {
-    if (!autoScroll || !activeLineId || searchQuery.trim()) return;
+    if (!autoScroll || !activeLineId) return;
 
     const targetElement = document.getElementById(`subtitle-${activeLineId}`);
     if (targetElement) {
       targetElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-  }, [activeLineId, autoScroll, searchQuery]);
-
-  // Filter subtitles based on search term
-  const filteredSubtitles = useMemo(() => {
-    if (!searchQuery.trim()) return subtitles;
-    const q = searchQuery.toLowerCase().trim();
-    return subtitles.filter(
-      (sub) =>
-        sub.mandarin.includes(q) ||
-        sub.english.toLowerCase().includes(q) ||
-        sub.characters.some((c) => c.pinyin.toLowerCase().includes(q)) ||
-        (sub.taiwanNotes && sub.taiwanNotes.toLowerCase().includes(q))
-    );
-  }, [subtitles, searchQuery]);
+  }, [activeLineId, autoScroll]);
 
   return (
     <div className="flex flex-col h-full">
       {/* Script Header Bar */}
       <div className="pb-4 border-b border-gray-200 dark:border-gray-800">
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <div className="flex items-center gap-2 pt-1">
             <BookOpen className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
             <h2 className="font-bold text-base text-gray-900 dark:text-white">
               Episode Subtitle Script
             </h2>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => setAutoScroll(!autoScroll)}
-              className={`flex items-center gap-1 px-2 py-1 text-xs rounded-lg transition border whitespace-nowrap shrink-0 ${
+              className={`flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition border whitespace-nowrap ${
                 autoScroll
-                  ? 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-900 font-semibold'
+                  ? 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-900'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-500 border-gray-200 dark:border-gray-700'
               }`}
               title="Automatically scroll the script to the currently spoken line"
             >
               <LocateFixed className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Follow: {autoScroll ? 'ON' : 'OFF'}</span>
+              <span>Follow: {autoScroll ? 'ON' : 'OFF'}</span>
             </button>
 
             {onSaveToVocabulary && (
@@ -149,22 +135,22 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
                   setPhraseSelectionMode((v) => !v);
                   setPhraseSelection(null);
                 }}
-                className={`flex items-center gap-1 px-2 py-1 text-xs rounded-lg transition border whitespace-nowrap shrink-0 ${
+                className={`flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition border whitespace-nowrap ${
                   phraseSelectionMode
-                    ? 'bg-yellow-50 dark:bg-yellow-950/40 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-800 font-semibold'
+                    ? 'bg-yellow-50 dark:bg-yellow-950/40 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-800'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-500 border-gray-200 dark:border-gray-700'
                 }`}
                 title="Click a run of characters to select a word or phrase, then save it to your vocabulary list"
               >
                 <Highlighter className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Select Phrase</span>
+                <span>Select Phrase</span>
               </button>
             )}
 
             {onOpenOcrScanner && (
               <button
                 onClick={onOpenOcrScanner}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 transition whitespace-nowrap shrink-0"
+                className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 transition whitespace-nowrap"
                 title="Optical Character Recognition: extract burned-in subtitles from video frames"
               >
                 <Scan className="w-3.5 h-3.5 text-cyan-500" />
@@ -176,7 +162,7 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
               <button
                 onClick={() => setIsExportMenuOpen((v) => !v)}
                 disabled={subtitles.length === 0}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shrink-0"
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 title="Save the script (OCR results and translations) to a file"
               >
                 <Download className="w-3.5 h-3.5 text-cyan-500" />
@@ -209,18 +195,6 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
               )}
             </div>
           </div>
-        </div>
-
-        {/* Search bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search characters, Pinyin (e.g. 'nǐ'), or English..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/40 text-gray-900 dark:text-white placeholder-gray-400"
-          />
         </div>
 
         {/* Phrase selection action bar */}
@@ -281,12 +255,8 @@ export const SubtitleList: React.FC<SubtitleListProps> = ({
               </button>
             )}
           </div>
-        ) : filteredSubtitles.length === 0 ? (
-          <div className="text-center py-12 text-gray-400 dark:text-gray-500">
-            <p className="text-sm">No subtitles match your search.</p>
-          </div>
         ) : (
-          filteredSubtitles.map((line) => (
+          subtitles.map((line) => (
             <div
               key={line.id}
               id={`subtitle-${line.id}`}
