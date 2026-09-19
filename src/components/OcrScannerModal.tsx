@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { SubtitleLine, OcrResult } from '../types';
 import { captureFrameFromVideo, scanFrameOcr, CropRegion } from '../utils/ocrService';
+import { saveOcrScanProgress, loadOcrScanProgress, clearOcrScanProgress } from '../utils/ocrScanPersistence';
 import { SubtitleRubyLine } from './SubtitleRubyLine';
 
 interface OcrScannerModalProps {
@@ -79,6 +80,27 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
       setBatchEndTime(Math.min(videoDuration, 180));
     }
   }, [isOpen, mode]);
+
+  // Recover an interrupted scan for this episode, if one was saved
+  useEffect(() => {
+    if (!isOpen || detectedBatchLines.length > 0) return;
+    const saved = loadOcrScanProgress(episodeTitle);
+    if (saved && (saved.lines.length > 0 || saved.lastScannedTime > 0)) {
+      setDetectedBatchLines(saved.lines);
+      setBatchStartTime(saved.lastScannedTime);
+      setBatchProgressTime(saved.lastScannedTime);
+      if (saved.endTime) setBatchEndTime(saved.endTime);
+      if (saved.interval) setScanInterval(saved.interval);
+      if (saved.cropRegion) setCropRegion(saved.cropRegion);
+      const mins = Math.floor(saved.lastScannedTime / 60);
+      const secs = (saved.lastScannedTime % 60).toFixed(0).padStart(2, '0');
+      setCurrentBatchStatus(
+        `Recovered ${saved.lines.length} line${saved.lines.length === 1 ? '' : 's'} from an earlier scan (stopped at ${mins}:${secs}). Click "Start Auto-Scanning Subtitles" to continue from there, or apply what's already saved.`
+      );
+    }
+    // Only check once per time the modal opens, not on every keystroke of state it may itself set.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -165,15 +187,17 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
 
     setIsBatchScanning(true);
     cancelBatchRef.current = false;
-    setDetectedBatchLines([]);
     setCurrentBatchStatus('Initializing automated frame optical character recognition...');
 
     const startSec = Math.max(0, batchStartTime);
     const endSec = Math.min(videoDuration || 300, batchEndTime > startSec ? batchEndTime : startSec + 60);
 
-    const accumulatedLines: SubtitleLine[] = [];
-    let lastSeenText = '';
-    let lastActiveLine: SubtitleLine | null = null;
+    // Seed from whatever's already in state, so resuming a recovered scan
+    // continues the same list instead of starting over.
+    const accumulatedLines: SubtitleLine[] = [...detectedBatchLines];
+    let lastActiveLine: SubtitleLine | null =
+      accumulatedLines.length > 0 ? accumulatedLines[accumulatedLines.length - 1] : null;
+    let lastSeenText = lastActiveLine ? lastActiveLine.mandarin : '';
 
     try {
       videoElement.pause();
@@ -248,6 +272,16 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
           lastSeenText = '';
           lastActiveLine = null;
         }
+
+        // Incremental save, so a refresh or closed tab mid-scan doesn't lose progress
+        saveOcrScanProgress(episodeTitle, {
+          lines: accumulatedLines,
+          lastScannedTime: t,
+          startTime: startSec,
+          endTime: endSec,
+          interval: scanInterval,
+          cropRegion,
+        });
       }
 
       setCurrentBatchStatus(`Completed scan! Found ${accumulatedLines.length} subtitle lines.`);
@@ -267,6 +301,8 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
   const handleApplyBatchResults = () => {
     if (detectedBatchLines.length === 0) return;
     onApplyParsedSubtitles(detectedBatchLines);
+    clearOcrScanProgress(episodeTitle);
+    setDetectedBatchLines([]);
     onClose();
   };
 
