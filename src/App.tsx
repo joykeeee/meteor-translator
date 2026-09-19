@@ -40,6 +40,13 @@ export default function App() {
   const [isAnalyzingScript, setIsAnalyzingScript] = useState<boolean>(false);
   const [analysisStatus, setAnalysisStatus] = useState<string | null>(null);
 
+  // Auto-dismiss the status banner after 7s; the Dismiss button can still close it early
+  useEffect(() => {
+    if (!analysisStatus) return;
+    const timer = setTimeout(() => setAnalysisStatus(null), 7000);
+    return () => clearTimeout(timer);
+  }, [analysisStatus]);
+
   // Context targeting for chat
   const [chatTargetLine, setChatTargetLine] = useState<SubtitleLine | null>(null);
   const [chatTargetChar, setChatTargetChar] = useState<string | null>(null);
@@ -176,7 +183,6 @@ export default function App() {
       setAnalysisStatus('Script processed with local Mandarin pinyin engine.');
     } finally {
       setIsAnalyzingScript(false);
-      setTimeout(() => setAnalysisStatus(null), 5000);
     }
   };
 
